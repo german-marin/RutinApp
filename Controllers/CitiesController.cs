@@ -26,23 +26,23 @@ namespace RutinApp.Controllers
                 //Cities cities = new Cities();
                 
                 HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Cities");
-                //Usa esta llamada para probar solo 1 retorno
-               //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Cities/2");
-
+               
                 response.EnsureSuccessStatusCode();
+                
                 string responseJson = await response.Content.ReadAsStringAsync();
 
                 //apaño provisional hasta entender como serializar correctamente los Json
-                if (responseJson[0] is not '[')
-                {
-                    responseJson = "[" + responseJson + "]";
-                }
+                //if (responseJson[0] is not '[')
+                //{
+                //    responseJson = "[" + responseJson + "]";
+                //}
                 List<City> citiesList = JsonConvert.DeserializeObject<List<City>>(responseJson);
+                
 
                 //cities = JsonConvert.DeserializeObject<Cities>("{" + responseJson + "}");
                 //cities = JsonConvert.DeserializeObject<Cities>("{\"results\": [" + responseJson + "]}");
                 //cities = JsonConvert.DeserializeObject<Cities>("{\"results\": " + responseJson + "}");
-                
+
                 //cities = JsonConvert.DeserializeObject<Cities>(responseJson);
                 //return cities;
 
