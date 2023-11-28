@@ -5,44 +5,27 @@ namespace RutinApp
 {
     public partial class Form1 : Form
     {
-        private CitiesController citiesController;
-        private Cities cities;
+        private MuscleGroupController muscleGroupController;
         public Form1()
         {
             InitializeComponent();
-            citiesController = new CitiesController();  
-            cities = new Cities();
+            muscleGroupController = new MuscleGroupController();
         }
-        private async void GetCities()
+        private async void GetAllMuscleGroup()
         {
-            List<City> cities = await citiesController.GetCities();
-            //cities= await citiesController.GetCities();
+            List<MuscleGroup> muscleGroupList = await muscleGroupController.GetAllMuscleGroup();
 
-            if (cities != null) 
+            if (muscleGroupList != null)
             {
-                //foreach (var city in  cities?.results!)
-                //{
-                //    DataGridViewRow row = new DataGridViewRow();
-                //    row.CreateCells(dgvCities);
 
-                //    row.Cells[0].Value = city.Name;
-                //    row.Cells[1].Value = city.CountryCode;
-                //    row.Cells[2].Value = city.District;
-                //    row.Cells[3].Value = city.Population;
-
-                //    dgvCities.Rows.Add(row);
-                //}
-                //dgvCities.DataSource = cities;
-                
-                foreach (City city in cities)
+                foreach (MuscleGroup muscleGroup in muscleGroupList)
                 {
                     DataGridViewRow row = new DataGridViewRow();
                     row.CreateCells(dgvCities);
 
-                    row.Cells[0].Value = city.Name;
-                    row.Cells[1].Value = city.CountryCode;
-                    row.Cells[2].Value = city.District;
-                    row.Cells[3].Value = city.Population;
+                    row.Cells[0].Value = muscleGroup.Description;
+                    row.Cells[1].Value = muscleGroup.ImageFront;
+                    row.Cells[2].Value = muscleGroup.ImageRear;
 
                     dgvCities.Rows.Add(row);
 
@@ -50,13 +33,13 @@ namespace RutinApp
             }
             else
             {
-                MessageBox.Show("No se pudo obtener la petición.","Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo obtener la petición.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void btnObtener_Click(object sender, EventArgs e)
         {
-            GetCities();
+            GetAllMuscleGroup();
         }
     }
 }

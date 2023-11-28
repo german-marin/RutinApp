@@ -33,7 +33,6 @@
             name = new DataGridViewTextBoxColumn();
             countryCode = new DataGridViewTextBoxColumn();
             district = new DataGridViewTextBoxColumn();
-            population = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvCities).BeginInit();
             SuspendLayout();
             // 
@@ -52,7 +51,7 @@
             dgvCities.AllowUserToAddRows = false;
             dgvCities.AllowUserToDeleteRows = false;
             dgvCities.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCities.Columns.AddRange(new DataGridViewColumn[] { name, countryCode, district, population });
+            dgvCities.Columns.AddRange(new DataGridViewColumn[] { name, countryCode, district });
             dgvCities.Location = new Point(12, 28);
             dgvCities.Name = "dgvCities";
             dgvCities.ReadOnly = true;
@@ -62,15 +61,16 @@
             // 
             // name
             // 
-            name.HeaderText = "Nombre";
+            name.AutoSizeMode = DataGridViewAutoSizeColumnMode.ColumnHeader;
+            name.HeaderText = "Grupo Muscular";
             name.MinimumWidth = 6;
             name.Name = "name";
             name.ReadOnly = true;
-            name.Width = 125;
+            name.Width = 142;
             // 
             // countryCode
             // 
-            countryCode.HeaderText = "Pais";
+            countryCode.HeaderText = "Imagen Delantera";
             countryCode.MinimumWidth = 6;
             countryCode.Name = "countryCode";
             countryCode.ReadOnly = true;
@@ -78,19 +78,11 @@
             // 
             // district
             // 
-            district.HeaderText = "Distrito";
+            district.HeaderText = "Imagen Trasera";
             district.MinimumWidth = 6;
             district.Name = "district";
             district.ReadOnly = true;
             district.Width = 125;
-            // 
-            // population
-            // 
-            population.HeaderText = "Población";
-            population.MinimumWidth = 6;
-            population.Name = "population";
-            population.ReadOnly = true;
-            population.Width = 125;
             // 
             // Form1
             // 
@@ -100,7 +92,7 @@
             Controls.Add(dgvCities);
             Controls.Add(btnObtener);
             Name = "Form1";
-            Text = "Form1";
+            Text = "RutinApp";
             ((System.ComponentModel.ISupportInitialize)dgvCities).EndInit();
             ResumeLayout(false);
         }
@@ -112,6 +104,5 @@
         private DataGridViewTextBoxColumn name;
         private DataGridViewTextBoxColumn countryCode;
         private DataGridViewTextBoxColumn district;
-        private DataGridViewTextBoxColumn population;
     }
 }
