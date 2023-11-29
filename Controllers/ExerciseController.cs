@@ -3,28 +3,28 @@ using RutinApp.Models;
 
 namespace RutinApp.Controllers
 {
-    public class MuscleGroupController
+    public class ExerciseController
     {
         private HttpClient client;
 
-        public  MuscleGroupController()
+        public ExerciseController()
         {
             client = new HttpClient();
         }
-                
-        public async Task<List<MuscleGroup>> GetAllMuscleGroup()
+
+        public async Task<List<Exercise>> GetCategoryExercises(int id)
         {
             try
-            {        
+            {
 
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/MuscleGroup");
+                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise?id=" + id);
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
-               
-                List<MuscleGroup> muscleGroupList = JsonConvert.DeserializeObject<List<MuscleGroup>>(responseJson);                                                
 
-                return muscleGroupList;
+                List<Exercise> exerciseList = JsonConvert.DeserializeObject<List<Exercise>>(responseJson);
+
+                return exerciseList;
 
             }
             catch (Exception ex)
