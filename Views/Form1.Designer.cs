@@ -33,17 +33,17 @@
             name = new DataGridViewTextBoxColumn();
             countryCode = new DataGridViewTextBoxColumn();
             district = new DataGridViewTextBoxColumn();
-            population = new DataGridViewTextBoxColumn();
+            trvGruposMusculares = new TreeView();
             ((System.ComponentModel.ISupportInitialize)dgvCities).BeginInit();
             SuspendLayout();
             // 
             // btnObtener
             // 
-            btnObtener.Location = new Point(307, 392);
+            btnObtener.Location = new Point(285, 682);
             btnObtener.Name = "btnObtener";
-            btnObtener.Size = new Size(159, 29);
+            btnObtener.Size = new Size(159, 61);
             btnObtener.TabIndex = 0;
-            btnObtener.Text = "Obtener ciudades";
+            btnObtener.Text = "Obtener grupos Musculares";
             btnObtener.UseVisualStyleBackColor = true;
             btnObtener.Click += btnObtener_Click;
             // 
@@ -52,7 +52,7 @@
             dgvCities.AllowUserToAddRows = false;
             dgvCities.AllowUserToDeleteRows = false;
             dgvCities.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvCities.Columns.AddRange(new DataGridViewColumn[] { name, countryCode, district, population });
+            dgvCities.Columns.AddRange(new DataGridViewColumn[] { name, countryCode, district });
             dgvCities.Location = new Point(12, 28);
             dgvCities.Name = "dgvCities";
             dgvCities.ReadOnly = true;
@@ -62,15 +62,16 @@
             // 
             // name
             // 
-            name.HeaderText = "Nombre";
+            name.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            name.HeaderText = "Grupo Muscular";
             name.MinimumWidth = 6;
             name.Name = "name";
             name.ReadOnly = true;
-            name.Width = 125;
+            name.Width = 130;
             // 
             // countryCode
             // 
-            countryCode.HeaderText = "Pais";
+            countryCode.HeaderText = "Imagen Delantera";
             countryCode.MinimumWidth = 6;
             countryCode.Name = "countryCode";
             countryCode.ReadOnly = true;
@@ -78,29 +79,30 @@
             // 
             // district
             // 
-            district.HeaderText = "Distrito";
+            district.HeaderText = "Imagen Trasera";
             district.MinimumWidth = 6;
             district.Name = "district";
             district.ReadOnly = true;
             district.Width = 125;
             // 
-            // population
+            // trvGruposMusculares
             // 
-            population.HeaderText = "Población";
-            population.MinimumWidth = 6;
-            population.Name = "population";
-            population.ReadOnly = true;
-            population.Width = 125;
+            trvGruposMusculares.Location = new Point(12, 405);
+            trvGruposMusculares.Name = "trvGruposMusculares";
+            trvGruposMusculares.Size = new Size(776, 220);
+            trvGruposMusculares.TabIndex = 2;
+            trvGruposMusculares.BeforeExpand += trvGruposMusculares_BeforeExpand;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(800, 755);
+            Controls.Add(trvGruposMusculares);
             Controls.Add(dgvCities);
             Controls.Add(btnObtener);
             Name = "Form1";
-            Text = "Form1";
+            Text = "RutinApp";
             ((System.ComponentModel.ISupportInitialize)dgvCities).EndInit();
             ResumeLayout(false);
         }
@@ -112,6 +114,6 @@
         private DataGridViewTextBoxColumn name;
         private DataGridViewTextBoxColumn countryCode;
         private DataGridViewTextBoxColumn district;
-        private DataGridViewTextBoxColumn population;
+        private TreeView trvGruposMusculares;
     }
 }
