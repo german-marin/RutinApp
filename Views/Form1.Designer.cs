@@ -51,6 +51,16 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            txtDescripcion = new TextBox();
+            label13 = new Label();
+            txtCliente = new TextBox();
+            label12 = new Label();
+            label11 = new Label();
+            label10 = new Label();
+            dtpFechaFin = new DateTimePicker();
+            dtpFechaInicio = new DateTimePicker();
+            label9 = new Label();
+            txtNotasGenerales = new TextBox();
             btnAñadir = new Button();
             btnLimpiar = new Button();
             btnGuardar = new Button();
@@ -62,6 +72,7 @@
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -295,6 +306,16 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(txtDescripcion);
+            tabPage2.Controls.Add(label13);
+            tabPage2.Controls.Add(txtCliente);
+            tabPage2.Controls.Add(label12);
+            tabPage2.Controls.Add(label11);
+            tabPage2.Controls.Add(label10);
+            tabPage2.Controls.Add(dtpFechaFin);
+            tabPage2.Controls.Add(dtpFechaInicio);
+            tabPage2.Controls.Add(label9);
+            tabPage2.Controls.Add(txtNotasGenerales);
             tabPage2.Location = new Point(4, 29);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
@@ -302,6 +323,91 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Datos del programa";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // txtDescripcion
+            // 
+            txtDescripcion.Location = new Point(554, 53);
+            txtDescripcion.Name = "txtDescripcion";
+            txtDescripcion.Size = new Size(354, 27);
+            txtDescripcion.TabIndex = 5;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(554, 30);
+            label13.Name = "label13";
+            label13.Size = new Size(129, 20);
+            label13.TabIndex = 4;
+            label13.Text = "Titulo de la rutina:";
+            // 
+            // txtCliente
+            // 
+            txtCliente.Location = new Point(687, 180);
+            txtCliente.Name = "txtCliente";
+            txtCliente.Size = new Size(221, 27);
+            txtCliente.TabIndex = 5;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(623, 183);
+            label12.Name = "label12";
+            label12.Size = new Size(58, 20);
+            label12.TabIndex = 4;
+            label12.Text = "Cliente:";
+            // 
+            // label11
+            // 
+            label11.AutoSize = true;
+            label11.Location = new Point(571, 140);
+            label11.Name = "label11";
+            label11.Size = new Size(110, 20);
+            label11.TabIndex = 4;
+            label11.Text = "Fin de la rutina:";
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(554, 102);
+            label10.Name = "label10";
+            label10.Size = new Size(127, 20);
+            label10.TabIndex = 4;
+            label10.Text = "Inicio de la rutina:";
+            // 
+            // dtpFechaFin
+            // 
+            dtpFechaFin.Format = DateTimePickerFormat.Short;
+            dtpFechaFin.Location = new Point(687, 137);
+            dtpFechaFin.Name = "dtpFechaFin";
+            dtpFechaFin.Size = new Size(127, 27);
+            dtpFechaFin.TabIndex = 3;
+            // 
+            // dtpFechaInicio
+            // 
+            dtpFechaInicio.Format = DateTimePickerFormat.Short;
+            dtpFechaInicio.Location = new Point(687, 99);
+            dtpFechaInicio.Name = "dtpFechaInicio";
+            dtpFechaInicio.Size = new Size(125, 27);
+            dtpFechaInicio.TabIndex = 2;
+            dtpFechaInicio.Value = new DateTime(2023, 11, 30, 15, 48, 18, 0);
+            // 
+            // label9
+            // 
+            label9.AutoSize = true;
+            label9.Location = new Point(30, 30);
+            label9.Name = "label9";
+            label9.Size = new Size(119, 20);
+            label9.TabIndex = 1;
+            label9.Text = "Notas generales:";
+            // 
+            // txtNotasGenerales
+            // 
+            txtNotasGenerales.Location = new Point(30, 53);
+            txtNotasGenerales.Multiline = true;
+            txtNotasGenerales.Name = "txtNotasGenerales";
+            txtNotasGenerales.Size = new Size(518, 202);
+            txtNotasGenerales.TabIndex = 0;
+            txtNotasGenerales.Text = resources.GetString("txtNotasGenerales.Text");
             // 
             // btnAñadir
             // 
@@ -316,6 +422,7 @@
             // 
             // btnLimpiar
             // 
+            btnLimpiar.Enabled = false;
             btnLimpiar.Location = new Point(780, 253);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(135, 29);
@@ -326,6 +433,7 @@
             // 
             // btnGuardar
             // 
+            btnGuardar.Enabled = false;
             btnGuardar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             btnGuardar.Location = new Point(790, 165);
             btnGuardar.Name = "btnGuardar";
@@ -333,6 +441,7 @@
             btnGuardar.TabIndex = 7;
             btnGuardar.Text = "Guardar Rutina";
             btnGuardar.UseVisualStyleBackColor = true;
+            btnGuardar.Click += btnGuardar_Click;
             // 
             // btnRecuperar
             // 
@@ -388,6 +497,8 @@
             panel1.PerformLayout();
             tabControl1.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
+            tabPage2.ResumeLayout(false);
+            tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
         }
@@ -421,5 +532,15 @@
         private Button btnRecuperar;
         private PictureBox pictureBox1;
         private Button btnBorrar;
+        private Label label9;
+        private TextBox txtNotasGenerales;
+        private DateTimePicker dtpFechaInicio;
+        private DateTimePicker dtpFechaFin;
+        private Label label11;
+        private Label label10;
+        private TextBox txtCliente;
+        private Label label12;
+        private TextBox txtDescripcion;
+        private Label label13;
     }
 }

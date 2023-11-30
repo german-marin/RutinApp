@@ -3,6 +3,7 @@ using RutinApp.Models;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace RutinApp
 {
@@ -12,6 +13,8 @@ namespace RutinApp
         private CategoryController categoryController;
         private ExerciseController exerciseController;
         private List<TrainingLine> trainingLines;
+        private string defaultText;
+
         public Form1()
         {
             InitializeComponent();
@@ -19,6 +22,7 @@ namespace RutinApp
             categoryController = new CategoryController();
             exerciseController = new ExerciseController();
             trainingLines = new List<TrainingLine>();
+            defaultText = txtNotasGenerales.Text;
             GetAllMuscleGroupTree();
         }
         private void cleanForm()
@@ -32,7 +36,9 @@ namespace RutinApp
             CleanTextbox();
             disableTextbox();
             btnLimpiar.Enabled = false;
-            btnBorrar.Enabled=false;
+            btnBorrar.Enabled = false;
+            btnGuardar.Enabled = false;
+            tabControl1.SelectedTab = tabPage1;
 
             // Volver a cargar datos iniciales
             GetAllMuscleGroupTree();
@@ -62,7 +68,6 @@ namespace RutinApp
             {
                 foreach (MuscleGroup muscleGroup in muscleGroupList)
                 {
-
                     // Agrega el nodo actual al TreeView              
                     TreeNode treeNode = new TreeNode(muscleGroup.Description);
 
@@ -144,7 +149,6 @@ namespace RutinApp
             if (e.Node.Level == 2)
             {
                 // Acciones que deseas realizar al hacer doble clic en un nodo hijo del hijo
-                //MessageBox.Show($"Doble clic en el nodo: {e.Node.Text}");
                 ListItem newItem = new ListItem(e.Node.Text, (int)e.Node.Tag);
                 // Agregar elementos al ListBox con Tags asociados
                 lstEjercicios.Items.Add(newItem);
@@ -193,6 +197,7 @@ namespace RutinApp
             lstEjercicios.Enabled = true;
             btnAñadir.Enabled = false;
             btnBorrar.Enabled = false;
+            btnLimpiar.Enabled = true;
 
             TrainingLine line = new TrainingLine(0, tagListValue, 0,
                                                     txtSeries.Text.Trim(),
@@ -203,6 +208,7 @@ namespace RutinApp
                                                     txtNotas.Text.Trim());
             trainingLines.Add(line);
             lstEjercicios.SelectedItem = null;
+            btnGuardar.Enabled = true;
             CleanTextbox();
         }
         private void CleanTextbox()
@@ -213,6 +219,11 @@ namespace RutinApp
             txtRecuperacion.Text = "";
             txtOtros.Text = "";
             txtNotas.Text = "";
+            txtDescripcion.Text = "";
+            txtCliente.Text = "";
+            dtpFechaFin.Value = DateTime.Now;
+            dtpFechaInicio.Value = DateTime.Now;
+            txtNotasGenerales.Text = defaultText;
         }
 
         private void lstEjercicios_Click(object sender, EventArgs e)
@@ -273,6 +284,80 @@ namespace RutinApp
             if (result == DialogResult.Yes)
             {
                 cleanForm();
+            }
+        }
+       
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {            
+            // Verificar la inserción
+            DialogResult result = MessageBox.Show("¿Estás seguro de que deseas guardar esta rutina?", "Confirmar guardado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                if (txtDescripcion.Text == "")
+                { 
+                    MessageBox.Show("Es necesario indicar un título a la rutina","Aviso",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    tabControl1.SelectedTab = tabPage2;
+                    txtDescripcion.Focus();
+                    return;
+                }
+                if (txtCliente.Text == "")
+                {
+                    MessageBox.Show("Es necesario indicar un cliente para la rutina", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    tabControl1.SelectedTab = tabPage2;
+                    txtCliente.Focus();
+                    return;
+                }
+                SaveTraining();
+            }
+        }
+        private async void SaveTraining()
+        {
+            try
+            {
+                // Obtén los datos necesarios para crear una nueva cabecera de la rutina                
+                string description = txtDescripcion.Text;
+                DateTime startDate = dtpFechaInicio.Value;
+                DateTime endDate = dtpFechaFin.Value;
+                int idClient = int.Parse(txtCliente.Text);
+                string notes = txtNotasGenerales.Text;
+
+                // Crea una instancia de Training
+                Training newTraining = new Training(0,description, startDate, endDate, idClient, notes);
+
+                // Llama al método InsertTraining que devuelve a su vez el ID del entrenamiento insertado
+                int lastTrainingID = await newTraining.InsertTraining();
+
+                if (lastTrainingID != -1)
+                {                   
+                    // Inserta las líneas de entrenamiento
+                    foreach (TrainingLine line in trainingLines)
+                    {
+                        // Asigna el ID del entrenamiento recién insertado a cada línea
+                        line.IdTraining = lastTrainingID;
+
+                        // Realiza la inserción de la línea
+                        bool lineSuccess = await line.InsertTrainingLine();
+
+                        if (!lineSuccess)
+                        {
+                            // Maneja el fallo en la inserción de la línea
+                            MessageBox.Show("Error al insertar línea de entrenamiento.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    //todo ok
+                    MessageBox.Show("Training insertado con éxito.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    cleanForm(); // Método para limpiar los campos después de la inserción
+                }
+                else
+                {                    
+                    MessageBox.Show("Error al recuperar el ultimo ID insertado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones generales
+                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

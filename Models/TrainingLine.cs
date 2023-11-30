@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RutinApp.Controllers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RutinApp.Models
 {
-    internal class TrainingLine
+    public class TrainingLine
     {
         public int ID { get; set; }
         public int IdExercise { get; set; }
@@ -30,5 +31,38 @@ namespace RutinApp.Models
             Others = others;
             Notes = notes;
         }
+        public async Task<bool> InsertTrainingLine()
+        {
+            try
+            {
+                TrainingLineController trainingLineController = new TrainingLineController();
+                // Llama al método
+                bool insertionResult = await trainingLineController.InsertTrainingLine(this);
+
+                if (insertionResult)
+                {
+                    // todo ok                   
+                    return true;
+                }
+                else
+                {
+                    // La inserción falló
+                    MessageBox.Show("Error al insertar TrainingLine.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Manejo de excepciones específicas de la solicitud HTTP
+                MessageBox.Show($"Error en la solicitud HTTP: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+
     }
 }

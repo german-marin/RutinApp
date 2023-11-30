@@ -117,6 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="txtNotasGenerales.Text" xml:space="preserve">
+    <value>- Nunca deben realizarse los ejercicios de forma violenta o de manera no indicada por los monitores.
+- Se recomienda calentar y realizar estiramientos antes y después de cada entrenamiento.
+- Se considera conveniente el uso de una toalla como medida higiénica.
+- Todo el material utilizado en el entrenamiento se dejará en su sitio.
+- Consulte cualquier duda a los monitores respecto a ejercicios, dietética, lesiones...</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
