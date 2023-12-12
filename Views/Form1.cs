@@ -1,5 +1,6 @@
 using RutinApp.Controllers;
 using RutinApp.Models;
+using RutinApp.Views;
 using System.Drawing.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -12,8 +13,11 @@ namespace RutinApp
         private MuscleGroupController muscleGroupController;
         private CategoryController categoryController;
         private ExerciseController exerciseController;
+        private TrainingController trainingController;
+        private TrainingLineController trainingLineController;
         private List<TrainingLine> trainingLines;
-        private string defaultText;
+        private readonly string defaultText;
+        private int idTrainingRecovered;
 
         public Form1()
         {
@@ -21,6 +25,8 @@ namespace RutinApp
             muscleGroupController = new MuscleGroupController();
             categoryController = new CategoryController();
             exerciseController = new ExerciseController();
+            trainingController = new TrainingController();
+            trainingLineController = new TrainingLineController();
             trainingLines = new List<TrainingLine>();
             defaultText = txtNotasGenerales.Text;
             GetAllMuscleGroupTree();
@@ -39,6 +45,7 @@ namespace RutinApp
             btnBorrar.Enabled = false;
             btnGuardar.Enabled = false;
             tabControl1.SelectedTab = tabPage1;
+            trvGruposMusculares.Enabled = true;
 
             // Volver a cargar datos iniciales
             GetAllMuscleGroupTree();
@@ -157,7 +164,8 @@ namespace RutinApp
 
                 //Preparamos el forms
                 lstEjercicios.Enabled = false;
-                CleanTextbox();
+                trvGruposMusculares.Enabled= false;
+                CleanExerciseTextbox();
                 enableTextbox();
                 btnGuardar.Enabled = false;
                 btnRecuperar.Enabled = false;
@@ -194,7 +202,7 @@ namespace RutinApp
             lstEjercicios.Enabled = true;
             btnGuardar.Enabled = true;
             btnRecuperar.Enabled = true;
-            lstEjercicios.Enabled = true;
+            trvGruposMusculares.Enabled = true;
             btnAñadir.Enabled = false;
             btnBorrar.Enabled = false;
             btnLimpiar.Enabled = true;
@@ -209,7 +217,7 @@ namespace RutinApp
             trainingLines.Add(line);
             lstEjercicios.SelectedItem = null;
             btnGuardar.Enabled = true;
-            CleanTextbox();
+            CleanExerciseTextbox();
         }
         private void CleanTextbox()
         {
@@ -225,14 +233,22 @@ namespace RutinApp
             dtpFechaInicio.Value = DateTime.Now;
             txtNotasGenerales.Text = defaultText;
         }
-
+       private void CleanExerciseTextbox()
+        {
+            txtSeries.Text = "";
+            txtRepes.Text = "";
+            txtPeso.Text = "";
+            txtRecuperacion.Text = "";
+            txtOtros.Text = "";
+            txtNotas.Text = "";            
+        }
         private void lstEjercicios_Click(object sender, EventArgs e)
         {
             if (lstEjercicios.SelectedItem != null)
             {
                 int index = lstEjercicios.SelectedIndex;
 
-                CleanTextbox();
+                CleanExerciseTextbox();
                 fillTextBox(trainingLines[index]);
                 btnBorrar.Enabled = true;
             }
@@ -254,8 +270,8 @@ namespace RutinApp
                 disableTextbox();
                 lstEjercicios.Enabled = true;
                 btnGuardar.Enabled = true;
-                btnRecuperar.Enabled = true;
-                lstEjercicios.Enabled = true;
+                btnRecuperar.Enabled = true;            
+                trvGruposMusculares.Enabled = true;
                 btnAñadir.Enabled = false;
                 btnBorrar.Enabled = false;
                 // Obtén el objeto ListItem seleccionado
@@ -264,7 +280,7 @@ namespace RutinApp
                 // Elimina el elemento del ListBox
                 lstEjercicios.Items.Remove(itemToRemove);
                 // Obtén el objeto TrainingLine asociado al ListItem
-                TrainingLine trainingLineToRemove = trainingLines.FirstOrDefault(tl => tl.IdExercise == itemToRemove.Tag);
+                TrainingLine trainingLineToRemove = trainingLines.FirstOrDefault(tl => tl.ID == itemToRemove.Tag);
                 // Elimina el objeto de la lista de objetos
                 if (trainingLineToRemove != null)
                 {
@@ -272,7 +288,7 @@ namespace RutinApp
                 }
                 //deseleccionamos el objeto
                 lstEjercicios.SelectedItem = null;
-                CleanTextbox();
+                CleanExerciseTextbox();
             }
         }
 
@@ -286,29 +302,114 @@ namespace RutinApp
                 cleanForm();
             }
         }
-       
-        private void btnGuardar_Click(object sender, EventArgs e)
-        {            
-            // Verificar la inserción
-            DialogResult result = MessageBox.Show("¿Estás seguro de que deseas guardar esta rutina?", "Confirmar guardado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (result == DialogResult.Yes)
+        private async void btnGuardar_Click(object sender, EventArgs e)
+        {
+            try
             {
-                if (txtDescripcion.Text == "")
-                { 
-                    MessageBox.Show("Es necesario indicar un título a la rutina","Aviso",MessageBoxButtons.OK,MessageBoxIcon.Information);
-                    tabControl1.SelectedTab = tabPage2;
-                    txtDescripcion.Focus();
-                    return;
-                }
-                if (txtCliente.Text == "")
+                // Verificar la inserción
+                DialogResult result = MessageBox.Show("¿Estás seguro de que deseas guardar esta rutina?", "Confirmar guardado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
                 {
-                    MessageBox.Show("Es necesario indicar un cliente para la rutina", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    tabControl1.SelectedTab = tabPage2;
-                    txtCliente.Focus();
-                    return;
+                    if (txtDescripcion.Text == "")
+                    {
+                        MessageBox.Show("Es necesario indicar un título a la rutina", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tabControl1.SelectedTab = tabPage2;
+                        txtDescripcion.Focus();
+                        return;
+                    }
+                    if (txtCliente.Text == "")
+                    {
+                        MessageBox.Show("Es necesario indicar un cliente para la rutina", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tabControl1.SelectedTab = tabPage2;
+                        txtCliente.Focus();
+                        return;
+                    }
+
+                    if (idTrainingRecovered != 0)
+                    {
+                        var deleteCompleted = await trainingController.DeleteTrainingAndTrainingLines(idTrainingRecovered);
+                        if (deleteCompleted)
+                        {
+                            SaveTraining();
+                        }
+                    }
+                    else
+                    {
+                        SaveTraining();
+                    }
                 }
-                SaveTraining();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo realizar la eliminación. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private async Task<int> InsertTraining(Training training)
+        {
+            try
+            {
+                // Crea una instancia de TrainingController
+                TrainingController trainingController = new TrainingController();
+
+                // Llama al método InsertTraining que devuelve el último ID insertado
+                int lastInsertID = await trainingController.InsertTraining(training);
+
+                if (lastInsertID != 0)
+                {
+                    // Si la inserción fue exitosa, actualiza el ID local
+                    training.ID = lastInsertID;
+                    return lastInsertID;
+                }
+                else
+                {
+                    // La inserción falló
+                    MessageBox.Show("Error al insertar Training.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return -1;
+                }
+
+            }
+            catch (HttpRequestException ex)
+            {
+                // Manejo de excepciones específicas de la solicitud HTTP
+                MessageBox.Show($"Error en la solicitud HTTP: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return -1;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return -1;
+            }
+        }
+        public async Task<bool> InsertTrainingLine(TrainingLine trainingLine)
+        {
+            try
+            {
+                bool insertionResult = await trainingLineController.InsertTrainingLine(trainingLine);
+
+                if (insertionResult)
+                {
+                    // todo ok                   
+                    return true;
+                }
+                else
+                {
+                    // La inserción falló
+                    MessageBox.Show("Error al insertar TrainingLine.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // Manejo de excepciones específicas de la solicitud HTTP
+                MessageBox.Show($"Error en la solicitud HTTP: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
         }
         private async void SaveTraining()
@@ -323,13 +424,13 @@ namespace RutinApp
                 string notes = txtNotasGenerales.Text;
 
                 // Crea una instancia de Training
-                Training newTraining = new Training(0,description, startDate, endDate, idClient, notes);
+                Training newTraining = new Training(0, description, startDate, endDate, idClient, notes);
 
                 // Llama al método InsertTraining que devuelve a su vez el ID del entrenamiento insertado
-                int lastTrainingID = await newTraining.InsertTraining();
+                int lastTrainingID = await InsertTraining(newTraining);
 
                 if (lastTrainingID != -1)
-                {                   
+                {
                     // Inserta las líneas de entrenamiento
                     foreach (TrainingLine line in trainingLines)
                     {
@@ -337,7 +438,7 @@ namespace RutinApp
                         line.IdTraining = lastTrainingID;
 
                         // Realiza la inserción de la línea
-                        bool lineSuccess = await line.InsertTrainingLine();
+                        bool lineSuccess = await InsertTrainingLine(line);
 
                         if (!lineSuccess)
                         {
@@ -350,7 +451,7 @@ namespace RutinApp
                     cleanForm(); // Método para limpiar los campos después de la inserción
                 }
                 else
-                {                    
+                {
                     MessageBox.Show("Error al recuperar el ultimo ID insertado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -358,6 +459,60 @@ namespace RutinApp
             {
                 // Manejo de excepciones generales
                 MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnRecuperar_Click(object sender, EventArgs e)
+        {
+            // Crear una instancia del formulario secundario
+            frmSelectorRutinas popupForm = new frmSelectorRutinas();
+
+            // Mostrar el formulario secundario como un cuadro de diálogo modal
+            popupForm.ShowDialog();
+            //Asignamos el valor recuperado del id del training a la variable global
+            idTrainingRecovered = popupForm.iDTraining;
+
+            if (idTrainingRecovered != 0)
+            {
+                RecoverTraining(idTrainingRecovered);
+            }
+           
+        }
+
+        private async void RecoverTraining(int recoveredID)
+        {
+            List<TrainingLine> trainingLineList = await trainingLineController.GetTrainingLinesOfTraining(recoveredID);
+
+            if (trainingLineList != null)
+            {
+                cleanForm();
+                //Recuperamos y cargamos en el form los datos de la rutina devuelta
+                Training training = await trainingController.GetTraining(recoveredID);
+                              
+                txtDescripcion.Text = training.Description;
+                dtpFechaInicio.Value = training.StartDate;
+                dtpFechaFin.Value = training.EndDate;
+                txtCliente.Text = training.IdClient.ToString();
+                txtNotasGenerales.Text = training.Notes;
+
+                //cargamos la lista recuperada en la lista de ejercicios del form
+                trainingLines = trainingLineList;
+
+                foreach (TrainingLine trainingLine in trainingLineList)
+                {
+                   // trainingLine.ID = 0;
+                    //trainingLines.Add(trainingLine);
+                    //recuperamos la descripción del ejercicio
+                    Exercise excercise = await exerciseController.GetExercise(trainingLine.IdExercise);
+
+                    ListItem newItem = new ListItem(excercise.Description, trainingLine.ID);
+                    // Agregar elementos al ListBox con Tags asociados
+                    lstEjercicios.Items.Add(newItem);
+                }
+            }
+            else
+            {
+                MessageBox.Show("No se pudo cargar las rutinas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

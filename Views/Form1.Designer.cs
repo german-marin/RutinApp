@@ -99,6 +99,7 @@
             // 
             pbFront.BorderStyle = BorderStyle.FixedSingle;
             pbFront.Image = Properties.Resources.MA;
+            pbFront.InitialImage = Properties.Resources.MA;
             pbFront.Location = new Point(614, 6);
             pbFront.Name = "pbFront";
             pbFront.Size = new Size(151, 271);
@@ -110,6 +111,7 @@
             // 
             pbBack.BorderStyle = BorderStyle.FixedSingle;
             pbBack.Image = Properties.Resources.MP;
+            pbBack.InitialImage = Properties.Resources.MP;
             pbBack.Location = new Point(773, 6);
             pbBack.Name = "pbBack";
             pbBack.Size = new Size(151, 271);
@@ -451,6 +453,7 @@
             btnRecuperar.TabIndex = 7;
             btnRecuperar.Text = "Recuperar Rutina";
             btnRecuperar.UseVisualStyleBackColor = true;
+            btnRecuperar.Click += btnRecuperar_Click;
             // 
             // pictureBox1
             // 

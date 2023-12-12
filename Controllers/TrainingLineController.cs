@@ -19,7 +19,7 @@ namespace RutinApp.Controllers
             try
             {
 
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/TrainingLine?id=" + id);
+                HttpResponseMessage response = await client.GetAsync($"https://localhost:7137/api/TrainingLine/GetTrainingLinesOfTraining?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -50,7 +50,6 @@ namespace RutinApp.Controllers
                 HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/TrainingLine", content);
                 response.EnsureSuccessStatusCode();
 
-                // Lee la respuesta para obtener el último ID insertado
                 string responseJson = await response.Content.ReadAsStringAsync();
                 bool result = JsonConvert.DeserializeObject<bool>(responseJson);
 
@@ -64,6 +63,24 @@ namespace RutinApp.Controllers
                 return false;
             }
 
+        }
+        public async Task<bool> DeleteTrainingLine(int id)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/TrainingLine?id={id}");
+                response.EnsureSuccessStatusCode();
+
+                string responseJson = await response.Content.ReadAsStringAsync();
+                bool result = JsonConvert.DeserializeObject<bool>(responseJson);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo realizar la eliminación. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
 
     }

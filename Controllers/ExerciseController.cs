@@ -17,7 +17,7 @@ namespace RutinApp.Controllers
             try
             {
 
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise?id=" + id);
+                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise/GetCategoryExercises?id=" + id);
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -35,6 +35,28 @@ namespace RutinApp.Controllers
             }
 
         }
+        public async Task<Exercise> GetExercise(int id)
+        {
+            try
+            {
 
+                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise/" + id);
+                response.EnsureSuccessStatusCode();
+
+                string responseJson = await response.Content.ReadAsStringAsync();
+
+                Exercise exercise = JsonConvert.DeserializeObject<Exercise>(responseJson);
+
+                return exercise;
+
+            }
+            catch (Exception ex)
+            {
+                //mirar como controlar esta excepción correctamente
+                MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+
+        }
     }
 }
