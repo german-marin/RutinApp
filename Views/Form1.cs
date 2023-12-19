@@ -1,10 +1,9 @@
 using RutinApp.Controllers;
 using RutinApp.Models;
 using RutinApp.Views;
-using System.Drawing.Text;
-using System.Windows.Forms;
-using System.Xml.Linq;
-using static System.Net.Mime.MediaTypeNames;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
+using Application = System.Windows.Forms.Application;
+using Image = System.Drawing.Image;
 
 namespace RutinApp
 {
@@ -79,7 +78,9 @@ namespace RutinApp
                     TreeNode treeNode = new TreeNode(muscleGroup.Description);
 
                     // Guarda la categoría asociada al nodo
-                    treeNode.Tag = muscleGroup.ID;
+                    //treeNode.Tag = muscleGroup.ID;
+                    treeNode.Tag = new Tuple<int, string, string>(muscleGroup.ID, muscleGroup.ImageFront, muscleGroup.ImageRear);
+
                     // Agrega un nodo Dummy para permitir la expansión
                     treeNode.Nodes.Add(new TreeNode("Dummy") { Tag = "Dummy" });
 
@@ -106,7 +107,9 @@ namespace RutinApp
                     selectedNode.Nodes.Clear();
 
                     // Obtén el grupo muscular asociada al nodo padre
-                    int idMuscleGroup = (int)selectedNode.Tag;
+                    var tagData = (Tuple<int, string, string>)selectedNode.Tag; 
+                    int idMuscleGroup = tagData.Item1; // Get the muscle group id from the Tuple                                       
+                    //int idMuscleGroup = (int)selectedNode.Tag;
 
                     // Obtén los hijos desde la base de datos             
                     List<Category> categoryList = await categoryController.GetMuscleGroupCategories(idMuscleGroup);
@@ -122,6 +125,7 @@ namespace RutinApp
                     // Expande el nodo padre para mostrar los nuevos hijos
                     selectedNode.Expand();
                 }
+                ChangeMuscleGroupImage(selectedNode);
             }
             else if (selectedNode.Level == 1) // Este es un nodo hijo (nivel 1)
             {
@@ -136,17 +140,20 @@ namespace RutinApp
 
                     // Obtén los hijos desde la API            
                     List<Exercise> exerciseList = await exerciseController.GetCategoryExercises(idCategory);
-
-                    // Agrega los nodos hijos al TreeNode
-                    foreach (Exercise exercise in exerciseList)
+                    if (exerciseList != null)
                     {
-                        TreeNode newNode = new TreeNode(exercise.Description);
-                        newNode.Tag = exercise.ID;  // Guarda la categoría asociada al nodo                        
-                        selectedNode.Nodes.Add(newNode);
+                        // Agrega los nodos hijos al TreeNode
+                        foreach (Exercise exercise in exerciseList)
+                        {
+                            TreeNode newNode = new TreeNode(exercise.Description);
+                            newNode.Tag = exercise.ID;  // Guarda la categoría asociada al nodo                        
+                            selectedNode.Nodes.Add(newNode);
+                        }
                     }
                     // Expande el nodo padre para mostrar los nuevos hijos
                     selectedNode.Expand();
                 }
+                ChangeMuscleGroupImage(selectedNode.Parent);
             }
         }
 
@@ -164,7 +171,7 @@ namespace RutinApp
 
                 //Preparamos el forms
                 lstEjercicios.Enabled = false;
-                trvGruposMusculares.Enabled= false;
+                trvGruposMusculares.Enabled = false;
                 CleanExerciseTextbox();
                 enableTextbox();
                 btnGuardar.Enabled = false;
@@ -233,14 +240,14 @@ namespace RutinApp
             dtpFechaInicio.Value = DateTime.Now;
             txtNotasGenerales.Text = defaultText;
         }
-       private void CleanExerciseTextbox()
+        private void CleanExerciseTextbox()
         {
             txtSeries.Text = "";
             txtRepes.Text = "";
             txtPeso.Text = "";
             txtRecuperacion.Text = "";
             txtOtros.Text = "";
-            txtNotas.Text = "";            
+            txtNotas.Text = "";
         }
         private void lstEjercicios_Click(object sender, EventArgs e)
         {
@@ -270,7 +277,7 @@ namespace RutinApp
                 disableTextbox();
                 lstEjercicios.Enabled = true;
                 btnGuardar.Enabled = true;
-                btnRecuperar.Enabled = true;            
+                btnRecuperar.Enabled = true;
                 trvGruposMusculares.Enabled = true;
                 btnAñadir.Enabled = false;
                 btnBorrar.Enabled = false;
@@ -476,7 +483,7 @@ namespace RutinApp
             {
                 RecoverTraining(idTrainingRecovered);
             }
-           
+
         }
 
         private async void RecoverTraining(int recoveredID)
@@ -488,7 +495,7 @@ namespace RutinApp
                 cleanForm();
                 //Recuperamos y cargamos en el form los datos de la rutina devuelta
                 Training training = await trainingController.GetTraining(recoveredID);
-                              
+
                 txtDescripcion.Text = training.Description;
                 dtpFechaInicio.Value = training.StartDate;
                 dtpFechaFin.Value = training.EndDate;
@@ -500,12 +507,10 @@ namespace RutinApp
 
                 foreach (TrainingLine trainingLine in trainingLineList)
                 {
-                   // trainingLine.ID = 0;
-                    //trainingLines.Add(trainingLine);
                     //recuperamos la descripción del ejercicio
-                    Exercise excercise = await exerciseController.GetExercise(trainingLine.IdExercise);
+                    Exercise exercise = await exerciseController.GetExercise(trainingLine.IdExercise);
 
-                    ListItem newItem = new ListItem(excercise.Description, trainingLine.ID);
+                    ListItem newItem = new ListItem(exercise.Description, trainingLine.ID);
                     // Agregar elementos al ListBox con Tags asociados
                     lstEjercicios.Items.Add(newItem);
                 }
@@ -513,6 +518,41 @@ namespace RutinApp
             else
             {
                 MessageBox.Show("No se pudo cargar las rutinas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void trvGruposMusculares_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            //if (e.Node.Parent == null) // Check if it's a parent node
+            if (e.Node.Level == 0)
+            {
+                ChangeMuscleGroupImage(e.Node);
+            }
+            else if (e.Node.Level == 1) // Este es un nodo hijo (nivel 1)
+            {                
+                 ChangeMuscleGroupImage(e.Node.Parent);
+            } 
+            else if (e.Node.Level == 2) // Este es un nodo hijo (nivel 2)
+            {
+                ChangeMuscleGroupImage(e.Node.Parent.Parent);
+            }   
+        }
+
+        private void ChangeMuscleGroupImage(TreeNode node)
+        {
+            var tagData = (Tuple<int, string, string>)node.Tag;
+            string imageFront = tagData.Item2; // Get the ImageFront from the Tuple
+            string imageRear = tagData.Item3;
+            try
+            {
+                pbFront.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", imageFront));
+                pbBack.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", imageRear));
+            }
+            catch (FileNotFoundException)
+            {
+                // Set the default image here
+                pbFront.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "MA.jpg"));
+                pbBack.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "MA.jpg"));
             }
         }
     }

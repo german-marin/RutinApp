@@ -83,6 +83,7 @@
             trvGruposMusculares.Size = new Size(600, 271);
             trvGruposMusculares.TabIndex = 2;
             trvGruposMusculares.BeforeExpand += trvGruposMusculares_BeforeExpand;
+            trvGruposMusculares.AfterSelect += trvGruposMusculares_AfterSelect;
             trvGruposMusculares.NodeMouseDoubleClick += trvGruposMusculares_NodeMouseDoubleClick;
             // 
             // lstEjercicios
