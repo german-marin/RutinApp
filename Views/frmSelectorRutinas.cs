@@ -30,7 +30,7 @@ namespace RutinApp.Views
 
                     row.Cells[0].Value = training.ID;
                     row.Cells[1].Value = training.Description;
-                    row.Cells[2].Value = training.IdClient;
+                    row.Cells[2].Value = training.CustomerID;
 
                     dgvRutinas.Rows.Add(row);
 

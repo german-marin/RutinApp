@@ -28,6 +28,7 @@ namespace RutinApp
             trainingLineController = new TrainingLineController();
             trainingLines = new List<TrainingLine>();
             defaultText = txtNotasGenerales.Text;
+            EnsureApiAvailability();
             GetAllMuscleGroupTree();
         }
         private void cleanForm()
@@ -107,7 +108,7 @@ namespace RutinApp
                     selectedNode.Nodes.Clear();
 
                     // Obtén el grupo muscular asociada al nodo padre
-                    var tagData = (Tuple<int, string, string>)selectedNode.Tag; 
+                    var tagData = (Tuple<int, string, string>)selectedNode.Tag;
                     int idMuscleGroup = tagData.Item1; // Get the muscle group id from the Tuple                                       
                     //int idMuscleGroup = (int)selectedNode.Tag;
 
@@ -262,8 +263,8 @@ namespace RutinApp
         }
         private void fillTextBox(TrainingLine line)
         {
-            txtSeries.Text = line.Series;
-            txtRepes.Text = line.Repetition;
+            txtSeries.Text = line.Sets;
+            txtRepes.Text = line.Repetitions;
             txtPeso.Text = line.Weight;
             txtRecuperacion.Text = line.Recovery;
             txtOtros.Text = line.Others;
@@ -431,7 +432,7 @@ namespace RutinApp
                 string notes = txtNotasGenerales.Text;
 
                 // Crea una instancia de Training
-                Training newTraining = new Training(0, description, startDate, endDate, idClient, notes);
+                Training newTraining = new Training(0, description, startDate, endDate, idClient, notes, DateTime.Now);
 
                 // Llama al método InsertTraining que devuelve a su vez el ID del entrenamiento insertado
                 int lastTrainingID = await InsertTraining(newTraining);
@@ -442,7 +443,7 @@ namespace RutinApp
                     foreach (TrainingLine line in trainingLines)
                     {
                         // Asigna el ID del entrenamiento recién insertado a cada línea
-                        line.IdTraining = lastTrainingID;
+                        line.TrainingID = lastTrainingID;
 
                         // Realiza la inserción de la línea
                         bool lineSuccess = await InsertTrainingLine(line);
@@ -499,8 +500,9 @@ namespace RutinApp
                 txtDescripcion.Text = training.Description;
                 dtpFechaInicio.Value = training.StartDate;
                 dtpFechaFin.Value = training.EndDate;
-                txtCliente.Text = training.IdClient.ToString();
+                txtCliente.Text = training.CustomerID.ToString();
                 txtNotasGenerales.Text = training.Notes;
+                btnLimpiar.Enabled = true;
 
                 //cargamos la lista recuperada en la lista de ejercicios del form
                 trainingLines = trainingLineList;
@@ -508,7 +510,7 @@ namespace RutinApp
                 foreach (TrainingLine trainingLine in trainingLineList)
                 {
                     //recuperamos la descripción del ejercicio
-                    Exercise exercise = await exerciseController.GetExercise(trainingLine.IdExercise);
+                    Exercise exercise = await exerciseController.GetExercise(trainingLine.ExerciseID);
 
                     ListItem newItem = new ListItem(exercise.Description, trainingLine.ID);
                     // Agregar elementos al ListBox con Tags asociados
@@ -529,13 +531,13 @@ namespace RutinApp
                 ChangeMuscleGroupImage(e.Node);
             }
             else if (e.Node.Level == 1) // Este es un nodo hijo (nivel 1)
-            {                
-                 ChangeMuscleGroupImage(e.Node.Parent);
-            } 
-            else if (e.Node.Level == 2) // Este es un nodo hijo (nivel 2)
+            {
+                ChangeMuscleGroupImage(e.Node.Parent);
+            }
+            else if (e.Node.Level == 2) // Este es un nodo hijo del hijo (nivel 2)
             {
                 ChangeMuscleGroupImage(e.Node.Parent.Parent);
-            }   
+            }
         }
 
         private void ChangeMuscleGroupImage(TreeNode node)
@@ -552,8 +554,50 @@ namespace RutinApp
             {
                 // Set the default image here
                 pbFront.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "MA.jpg"));
-                pbBack.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "MA.jpg"));
+                pbBack.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "MP.jpg"));
             }
         }
+
+        private async Task<bool> VerifyApiAvailability()
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    // URL con la dirección del punto de entrada de la API
+                    string apiUrl = "https://localhost:7137/api/MuscleGroup"; 
+
+                    HttpResponseMessage response = await client.GetAsync(apiUrl);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return true; // La API está en línea
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Error al acceder a la API. Código de estado: {response.StatusCode}",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return false; // La API no está disponible
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al verificar la API: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false; // Error en la verificación
+            }
+        }
+
+        private async void EnsureApiAvailability()
+        {
+            bool apiAvailable = await VerifyApiAvailability();
+
+            if (!apiAvailable)
+            {
+                // Cierra la aplicación si la API no está disponible
+                Application.Exit();
+            }
+        }
+
     }
 }

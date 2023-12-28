@@ -47,7 +47,7 @@ namespace RutinApp.Controllers
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Realiza la solicitud POST
-                HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/TrainingLine", content);
+                HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/TrainingLine/InsertTrainingLine", content);
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
