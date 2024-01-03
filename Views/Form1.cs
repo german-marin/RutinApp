@@ -303,7 +303,7 @@ namespace RutinApp
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             // Verificar el borrado
-            DialogResult result = MessageBox.Show("¿Estás seguro de que deseas borrar esta rutina?", "Confirmar borrado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult result = MessageBox.Show("¿Estás seguro de que deseas limpiar esta rutina?", "Confirmar limpiado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
             if (result == DialogResult.Yes)
             {
@@ -565,7 +565,8 @@ namespace RutinApp
                 using (HttpClient client = new HttpClient())
                 {
                     // URL con la dirección del punto de entrada de la API
-                    string apiUrl = "https://localhost:7137/api/MuscleGroup"; 
+                    //string apiUrl = "https://localhost:7137/api/MuscleGroup";
+                    string apiUrl = $"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup";
 
                     HttpResponseMessage response = await client.GetAsync(apiUrl);
 

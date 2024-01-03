@@ -18,8 +18,8 @@ namespace RutinApp.Controllers
         {
             try
             {
-
-                HttpResponseMessage response = await client.GetAsync($"https://localhost:7137/api/TrainingLine/GetTrainingLinesOfTraining?id={id}");
+                //HttpResponseMessage response = await client.GetAsync($"https://localhost:7137/api/TrainingLine/GetTrainingLinesOfTraining?id={id}");
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/TrainingLine/GetTrainingLinesOfTraining?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -47,7 +47,8 @@ namespace RutinApp.Controllers
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Realiza la solicitud POST
-                HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/TrainingLine/InsertTrainingLine", content);
+                //HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/TrainingLine/InsertTrainingLine", content);
+                HttpResponseMessage response = await client.PostAsync($"{ApiConfiguration.ApiBaseUrl}/api/TrainingLine/InsertTrainingLine", content);
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -68,7 +69,8 @@ namespace RutinApp.Controllers
         {
             try
             {
-                HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/TrainingLine?id={id}");
+                //HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/TrainingLine?id={id}");
+                HttpResponseMessage response = await client.DeleteAsync($"{ApiConfiguration.ApiBaseUrl}/api/TrainingLine?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();

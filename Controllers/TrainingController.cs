@@ -24,7 +24,8 @@ namespace RutinApp.Controllers
                 HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 // Realiza la solicitud POST
-                HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/Training/InsertTraining", content);
+                //HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/Training/InsertTraining", content);
+                HttpResponseMessage response = await client.PostAsync($"{ApiConfiguration.ApiBaseUrl}/api/Training/InsertTraining", content);
                 response.EnsureSuccessStatusCode();
 
                 // Lee la respuesta para obtener el último ID insertado
@@ -46,7 +47,8 @@ namespace RutinApp.Controllers
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Training/GetAllTrainings");
+                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Training/GetAllTrainings");
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Training/GetAllTrainings");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -66,7 +68,8 @@ namespace RutinApp.Controllers
         {
             try
             {
-                HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/Training/DeleteTraining?id={id}");
+                //HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/Training/DeleteTraining?id={id}");
+                HttpResponseMessage response = await client.DeleteAsync($"{ApiConfiguration.ApiBaseUrl}/api/Training/DeleteTraining?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -84,7 +87,8 @@ namespace RutinApp.Controllers
         {
             try
             {
-                HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/Training/DeleteTrainingAndTrainingLines?id={id}");
+                //HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/Training/DeleteTrainingAndTrainingLines?id={id}");
+                HttpResponseMessage response = await client.DeleteAsync($"{ApiConfiguration.ApiBaseUrl}/api/Training/DeleteTrainingAndTrainingLines?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -102,8 +106,8 @@ namespace RutinApp.Controllers
         {
             try
             {
-
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Training/" + id);
+                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Training/" + id);
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Training/{id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();

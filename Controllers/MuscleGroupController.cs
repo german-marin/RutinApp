@@ -17,7 +17,9 @@ namespace RutinApp.Controllers
             try
             {        
 
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/MuscleGroup");
+                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/MuscleGroup");
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup");
+
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();

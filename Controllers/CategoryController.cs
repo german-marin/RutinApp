@@ -16,8 +16,7 @@ namespace RutinApp.Controllers
         {
             try
             {
-
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Category?id=" + id);
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Category?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();

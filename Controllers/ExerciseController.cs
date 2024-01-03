@@ -17,7 +17,7 @@ namespace RutinApp.Controllers
             try
             {
 
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise/GetCategoryExercises?id=" + id);
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Exercise/GetCategoryExercises?id={id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
@@ -40,7 +40,8 @@ namespace RutinApp.Controllers
             try
             {
 
-                HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise/" + id);
+                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise/" + id);
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Exercise/{id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
