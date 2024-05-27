@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             trvGruposMusculares = new TreeView();
             lstEjercicios = new ListBox();
@@ -65,15 +66,17 @@
             btnLimpiar = new Button();
             btnGuardar = new Button();
             btnRecuperar = new Button();
-            pictureBox1 = new PictureBox();
+            pbExercise = new PictureBox();
             btnBorrar = new Button();
+            bsTraining = new BindingSource(components);
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pbExercise).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)bsTraining).BeginInit();
             SuspendLayout();
             // 
             // trvGruposMusculares
@@ -482,17 +485,17 @@
             btnRecuperar.UseVisualStyleBackColor = true;
             btnRecuperar.Click += btnRecuperar_Click;
             // 
-            // pictureBox1
+            // pbExercise
             // 
-            pictureBox1.BackColor = Color.Transparent;
-            pictureBox1.Image = Properties.Resources.muestra;
-            pictureBox1.Location = new Point(55, 51);
-            pictureBox1.Margin = new Padding(3, 2, 3, 2);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(151, 170);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 8;
-            pictureBox1.TabStop = false;
+            pbExercise.BackColor = Color.Transparent;
+            pbExercise.Image = Properties.Resources.rutinApp;
+            pbExercise.Location = new Point(55, 51);
+            pbExercise.Margin = new Padding(3, 2, 3, 2);
+            pbExercise.Name = "pbExercise";
+            pbExercise.Size = new Size(151, 170);
+            pbExercise.SizeMode = PictureBoxSizeMode.Zoom;
+            pbExercise.TabIndex = 8;
+            pbExercise.TabStop = false;
             // 
             // btnBorrar
             // 
@@ -511,7 +514,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(822, 506);
-            Controls.Add(pictureBox1);
+            Controls.Add(pbExercise);
             Controls.Add(btnRecuperar);
             Controls.Add(btnGuardar);
             Controls.Add(btnLimpiar);
@@ -520,9 +523,12 @@
             Controls.Add(panel1);
             Controls.Add(lstEjercicios);
             Controls.Add(tabControl1);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
+            MaximizeBox = false;
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "RutinApp";
             ((System.ComponentModel.ISupportInitialize)pbFront).EndInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).EndInit();
@@ -532,7 +538,8 @@
             tabPage1.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
             tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pbExercise).EndInit();
+            ((System.ComponentModel.ISupportInitialize)bsTraining).EndInit();
             ResumeLayout(false);
         }
 
@@ -563,7 +570,7 @@
         private Button btnLimpiar;
         private Button btnGuardar;
         private Button btnRecuperar;
-        private PictureBox pictureBox1;
+        private PictureBox pbExercise;
         private Button btnBorrar;
         private Label label9;
         private TextBox txtNotasGenerales;
@@ -575,5 +582,6 @@
         private Label label12;
         private TextBox txtDescripcion;
         private Label label13;
+        private BindingSource bsTraining;
     }
 }

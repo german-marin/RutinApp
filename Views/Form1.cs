@@ -1,6 +1,8 @@
 using RutinApp.Controllers;
 using RutinApp.Models;
 using RutinApp.Views;
+using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 using Application = System.Windows.Forms.Application;
 using Image = System.Drawing.Image;
@@ -20,6 +22,9 @@ namespace RutinApp
 
         public Form1()
         {
+            // Mostrar el SplashScreen
+            frmLoading splashScreen = new frmLoading();
+            splashScreen.Show();
             InitializeComponent();
             muscleGroupController = new MuscleGroupController();
             categoryController = new CategoryController();
@@ -30,6 +35,7 @@ namespace RutinApp
             defaultText = txtNotasGenerales.Text;
             EnsureApiAvailability();
             GetAllMuscleGroupTree();
+            //splashScreen.Close();
         }
         private void cleanForm()
         {
@@ -46,7 +52,8 @@ namespace RutinApp
             btnGuardar.Enabled = false;
             tabControl1.SelectedTab = tabPage1;
             trvGruposMusculares.Enabled = true;
-
+            //Limpiar imagen de ejercicio
+            ChangeExcerciseImage("");
             // Volver a cargar datos iniciales
             GetAllMuscleGroupTree();
         }
@@ -55,11 +62,13 @@ namespace RutinApp
         {
             public string Text { get; set; }
             public int Tag { get; set; }
+            public string Image { get; set; }
 
-            public ListItem(string text, int tag)
+            public ListItem(string text, int tag, string image)
             {
                 Text = text;
                 Tag = tag;
+                Image = image;
             }
 
             public override string ToString()
@@ -147,7 +156,9 @@ namespace RutinApp
                         foreach (Exercise exercise in exerciseList)
                         {
                             TreeNode newNode = new TreeNode(exercise.Description);
-                            newNode.Tag = exercise.ID;  // Guarda la categoría asociada al nodo                        
+                            //newNode.Tag = exercise.ID;  // Guarda la categoría asociada al nodo
+                            // Guarda la categoría asociada al nodo         
+                            newNode.Tag = new Tuple<int, string>(exercise.ID, exercise.Image);
                             selectedNode.Nodes.Add(newNode);
                         }
                     }
@@ -164,7 +175,9 @@ namespace RutinApp
             if (e.Node.Level == 2)
             {
                 // Acciones que deseas realizar al hacer doble clic en un nodo hijo del hijo
-                ListItem newItem = new ListItem(e.Node.Text, (int)e.Node.Tag);
+                var tagData = (Tuple<int, string>)e.Node.Tag;
+                ListItem newItem = new ListItem(e.Node.Text, (int)tagData.Item1,tagData.Item2);
+               
                 // Agregar elementos al ListBox con Tags asociados
                 lstEjercicios.Items.Add(newItem);
                 // Selecciona el nuevo elemento recién agregado
@@ -205,6 +218,19 @@ namespace RutinApp
         private void btnAñadir_Click(object sender, EventArgs e)
         {
             int tagListValue = ((ListItem)lstEjercicios.SelectedItem).Tag;
+
+            if (txtSeries.Text == "")
+            {
+                MessageBox.Show("El campo Series es obligatorio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtSeries.Focus();
+                return;
+            }
+            if (txtRepes.Text == "")
+            {
+                MessageBox.Show("El campo Repeticiones es obligatorio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                txtRepes.Focus();
+                return;
+            }
 
             disableTextbox();
             lstEjercicios.Enabled = true;
@@ -255,7 +281,7 @@ namespace RutinApp
             if (lstEjercicios.SelectedItem != null)
             {
                 int index = lstEjercicios.SelectedIndex;
-
+                ChangeExcerciseImage(((ListItem)lstEjercicios.SelectedItem).Image);
                 CleanExerciseTextbox();
                 fillTextBox(trainingLines[index]);
                 btnBorrar.Enabled = true;
@@ -332,6 +358,19 @@ namespace RutinApp
                         MessageBox.Show("Es necesario indicar un cliente para la rutina", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         tabControl1.SelectedTab = tabPage2;
                         txtCliente.Focus();
+                        return;
+                    }
+                    if (trainingLines.Count == 0)
+                    {
+                        MessageBox.Show("Es necesario añadir al menos un ejercicio a la rutina", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tabControl1.SelectedTab = tabPage1;
+                        return;
+                    }
+                    if (dtpFechaFin.Value < dtpFechaInicio.Value)
+                    {
+                        MessageBox.Show("La fecha de fin no puede ser anterior a la fecha de inicio", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        tabControl1.SelectedTab = tabPage2;
+                        dtpFechaFin.Focus();
                         return;
                     }
 
@@ -512,7 +551,7 @@ namespace RutinApp
                     //recuperamos la descripción del ejercicio
                     Exercise exercise = await exerciseController.GetExercise(trainingLine.ExerciseID);
 
-                    ListItem newItem = new ListItem(exercise.Description, trainingLine.ID);
+                    ListItem newItem = new ListItem(exercise.Description, trainingLine.ID,exercise.Image);
                     // Agregar elementos al ListBox con Tags asociados
                     lstEjercicios.Items.Add(newItem);
                 }
@@ -537,6 +576,11 @@ namespace RutinApp
             else if (e.Node.Level == 2) // Este es un nodo hijo del hijo (nivel 2)
             {
                 ChangeMuscleGroupImage(e.Node.Parent.Parent);
+
+                var tagData = (Tuple<int, string>)e.Node.Tag;
+                string image = tagData.Item2; // Get the Image from the Tuple  
+                ChangeExcerciseImage(image);
+
             }
         }
 
@@ -558,6 +602,18 @@ namespace RutinApp
             }
         }
 
+        private void ChangeExcerciseImage(string image)
+        {       
+            try
+            {
+                pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources/exercisePictures", image + ".jpg"));              
+            }
+            catch (FileNotFoundException)
+            {
+                // Set the default image here
+                pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "rutinApp.jpg"));             
+            }
+        }
         private async Task<bool> VerifyApiAvailability()
         {
             try

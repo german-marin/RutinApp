@@ -63,6 +63,16 @@ namespace RutinApp.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _23a5bfd6_8a44_412b_bd4a_6e46e943979c {
+            get {
+                object obj = ResourceManager.GetObject("_23a5bfd6-8a44-412b-bd4a-6e46e943979c", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Ant_01 {
             get {
                 object obj = ResourceManager.GetObject("Ant_01", resourceCulture);
@@ -186,6 +196,36 @@ namespace RutinApp.Properties {
         internal static System.Drawing.Bitmap ANT_13 {
             get {
                 object obj = ResourceManager.GetObject("ANT_13", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap giphy {
+            get {
+                object obj = ResourceManager.GetObject("giphy", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap klipartz_com__1_ {
+            get {
+                object obj = ResourceManager.GetObject("klipartz.com (1)", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap klipartz1 {
+            get {
+                object obj = ResourceManager.GetObject("klipartz1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -326,6 +366,26 @@ namespace RutinApp.Properties {
         internal static System.Drawing.Bitmap POS_9 {
             get {
                 object obj = ResourceManager.GetObject("POS_9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rutin_login {
+            get {
+                object obj = ResourceManager.GetObject("rutin_login", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap rutinApp {
+            get {
+                object obj = ResourceManager.GetObject("rutinApp", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
