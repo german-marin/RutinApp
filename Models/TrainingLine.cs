@@ -18,7 +18,7 @@ namespace RutinApp.Models
         public string Weight { get; set; }
         public string Recovery { get; set; }
         public string Others { get; set; }
-        public string Notes { get; set; }
+        public string Notes { get; set; }       
 
         public TrainingLine(int iD, int idExercise, int idTraining, string series, string repetition, string weight, string recovery, string others, string notes)
         {
@@ -30,8 +30,8 @@ namespace RutinApp.Models
             Weight = weight;
             Recovery = recovery;
             Others = others;
-            Notes = notes;
-        }        
+            Notes = notes;           
+        }
 
     }
 }

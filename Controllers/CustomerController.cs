@@ -3,31 +3,27 @@ using RutinApp.Models;
 
 namespace RutinApp.Controllers
 {
-    public class MuscleGroupController
+    internal class CustomerController
     {
         private HttpClient client;
 
-        public  MuscleGroupController()
+        public CustomerController()
         {
             client = new HttpClient();
         }
-                
-        public async Task<List<MuscleGroup>> GetAllMuscleGroup()
+        public async Task<List<Customer>> GetAllCustomers()
         {
             try
-            {        
-
-                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/MuscleGroup");
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup");
+            {               
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Customer");
 
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
-               
-                List<MuscleGroup> muscleGroupList = JsonConvert.DeserializeObject<List<MuscleGroup>>(responseJson);                                                
 
-                return muscleGroupList;
+                List<Customer> customerList = JsonConvert.DeserializeObject<List<Customer>>(responseJson);
 
+                return customerList;
             }
             catch (Exception ex)
             {
@@ -37,18 +33,18 @@ namespace RutinApp.Controllers
             }
 
         }
-        public async Task<MuscleGroup> GetMuscleGroup(int id)
+        public async Task<Customer> GetCustomer(int id)
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup/{id}");
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Customer/{id}");
                 response.EnsureSuccessStatusCode();
 
                 string responseJson = await response.Content.ReadAsStringAsync();
 
-                MuscleGroup muscleGroup = JsonConvert.DeserializeObject<MuscleGroup>(responseJson);
+                Customer customer = JsonConvert.DeserializeObject<Customer>(responseJson);
 
-                return muscleGroup;
+                return customer;
 
             }
             catch (Exception ex)

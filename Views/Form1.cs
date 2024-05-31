@@ -16,7 +16,9 @@ namespace RutinApp
         private ExerciseController exerciseController;
         private TrainingController trainingController;
         private TrainingLineController trainingLineController;
+        private CustomerController customerController;
         private List<TrainingLine> trainingLines;
+        private List<ExerciseToPrint> exercisesToPrint;
         private readonly string defaultText;
         private int idTrainingRecovered;
 
@@ -24,14 +26,17 @@ namespace RutinApp
         {
             // Mostrar el SplashScreen
             frmLoading splashScreen = new frmLoading();
-            splashScreen.Show();
+            //splashScreen.Show();
+            splashScreen.ShowDialog();
             InitializeComponent();
             muscleGroupController = new MuscleGroupController();
             categoryController = new CategoryController();
             exerciseController = new ExerciseController();
             trainingController = new TrainingController();
             trainingLineController = new TrainingLineController();
+            customerController = new CustomerController();
             trainingLines = new List<TrainingLine>();
+            exercisesToPrint = new List<ExerciseToPrint>();
             defaultText = txtNotasGenerales.Text;
             EnsureApiAvailability();
             GetAllMuscleGroupTree();
@@ -43,17 +48,18 @@ namespace RutinApp
             trainingLines.Clear();
             lstEjercicios.Items.Clear();
             trvGruposMusculares.Nodes.Clear();
-
+            idTrainingRecovered = 0;
             // Restablecer otros estados
             CleanTextbox();
             disableTextbox();
-            btnLimpiar.Enabled = false;
+            //btnLimpiar.Enabled = false;
+            btnImprimir.Enabled = false;
             btnBorrar.Enabled = false;
             btnGuardar.Enabled = false;
             tabControl1.SelectedTab = tabPage1;
             trvGruposMusculares.Enabled = true;
             //Limpiar imagen de ejercicio
-            ChangeExcerciseImage("");
+            pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "rutinApp.jpg"));
             // Volver a cargar datos iniciales
             GetAllMuscleGroupTree();
         }
@@ -64,11 +70,14 @@ namespace RutinApp
             public int Tag { get; set; }
             public string Image { get; set; }
 
-            public ListItem(string text, int tag, string image)
+            public string MuscleGroup { get; set; }
+
+            public ListItem(string text, int tag, string image, string muscleGroup)
             {
                 Text = text;
                 Tag = tag;
                 Image = image;
+                MuscleGroup = muscleGroup;
             }
 
             public override string ToString()
@@ -176,8 +185,8 @@ namespace RutinApp
             {
                 // Acciones que deseas realizar al hacer doble clic en un nodo hijo del hijo
                 var tagData = (Tuple<int, string>)e.Node.Tag;
-                ListItem newItem = new ListItem(e.Node.Text, (int)tagData.Item1,tagData.Item2);
-               
+                ListItem newItem = new ListItem(e.Node.Text, (int)tagData.Item1, tagData.Item2, e.Node.Parent.Parent.Text);
+
                 // Agregar elementos al ListBox con Tags asociados
                 lstEjercicios.Items.Add(newItem);
                 // Selecciona el nuevo elemento recién agregado
@@ -240,7 +249,7 @@ namespace RutinApp
             btnAñadir.Enabled = false;
             btnBorrar.Enabled = false;
             btnLimpiar.Enabled = true;
-
+            btnImprimir.Enabled = true;
             TrainingLine line = new TrainingLine(0, tagListValue, 0,
                                                     txtSeries.Text.Trim(),
                                                     txtRepes.Text.Trim(),
@@ -252,6 +261,8 @@ namespace RutinApp
             lstEjercicios.SelectedItem = null;
             btnGuardar.Enabled = true;
             CleanExerciseTextbox();
+            //ChangeExcerciseImage("");
+            pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "rutinApp.jpg"));
         }
         private void CleanTextbox()
         {
@@ -263,6 +274,8 @@ namespace RutinApp
             txtNotas.Text = "";
             txtDescripcion.Text = "";
             txtCliente.Text = "";
+            txtCliente.Tag = "";
+            txtdias.Text = "";
             dtpFechaFin.Value = DateTime.Now;
             dtpFechaInicio.Value = DateTime.Now;
             txtNotasGenerales.Text = defaultText;
@@ -379,6 +392,11 @@ namespace RutinApp
                         var deleteCompleted = await trainingController.DeleteTrainingAndTrainingLines(idTrainingRecovered);
                         if (deleteCompleted)
                         {
+                            //borramos el id de las lineas recuperadas por si se reordenan
+                            foreach (var trainingLine in trainingLines)
+                            {
+                                trainingLine.ID = 0; 
+                            }
                             SaveTraining();
                         }
                     }
@@ -390,9 +408,10 @@ namespace RutinApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo realizar la eliminación. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo realizar el guardado. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private async Task<int> InsertTraining(Training training)
         {
             try
@@ -467,11 +486,12 @@ namespace RutinApp
                 string description = txtDescripcion.Text;
                 DateTime startDate = dtpFechaInicio.Value;
                 DateTime endDate = dtpFechaFin.Value;
-                int idClient = int.Parse(txtCliente.Text);
+                int idClient = int.Parse(txtCliente.Tag.ToString());
                 string notes = txtNotasGenerales.Text;
+                string days = txtdias.Text;
 
                 // Crea una instancia de Training
-                Training newTraining = new Training(0, description, startDate, endDate, idClient, notes, DateTime.Now);
+                Training newTraining = new Training(0, description, startDate, endDate, idClient, notes, days);
 
                 // Llama al método InsertTraining que devuelve a su vez el ID del entrenamiento insertado
                 int lastTrainingID = await InsertTraining(newTraining);
@@ -510,17 +530,27 @@ namespace RutinApp
         }
 
         private void btnRecuperar_Click(object sender, EventArgs e)
-        {
+        {            
             // Crear una instancia del formulario secundario
             frmSelectorRutinas popupForm = new frmSelectorRutinas();
-
+          
+            if (txtCliente.Tag == "" || txtCliente.Tag is null)
+            {
+                popupForm.IDCustomer = 0;
+            }
+            else
+            {
+                popupForm.IDCustomer = int.Parse(txtCliente.Tag.ToString());
+            }
             // Mostrar el formulario secundario como un cuadro de diálogo modal
             popupForm.ShowDialog();
             //Asignamos el valor recuperado del id del training a la variable global
-            idTrainingRecovered = popupForm.iDTraining;
+            idTrainingRecovered = popupForm.IDTraining;
 
-            if (idTrainingRecovered != 0)
+            if (popupForm.IDTraining != 0)
             {
+                cleanForm();
+                idTrainingRecovered = popupForm.IDTraining;
                 RecoverTraining(idTrainingRecovered);
             }
 
@@ -531,17 +561,20 @@ namespace RutinApp
             List<TrainingLine> trainingLineList = await trainingLineController.GetTrainingLinesOfTraining(recoveredID);
 
             if (trainingLineList != null)
-            {
-                cleanForm();
+            {                
                 //Recuperamos y cargamos en el form los datos de la rutina devuelta
                 Training training = await trainingController.GetTraining(recoveredID);
+                Customer customer = await customerController.GetCustomer(training.CustomerID);
 
                 txtDescripcion.Text = training.Description;
                 dtpFechaInicio.Value = training.StartDate;
                 dtpFechaFin.Value = training.EndDate;
-                txtCliente.Text = training.CustomerID.ToString();
+                txtdias.Text = training.Days.ToString();
+                txtCliente.Tag = training.CustomerID.ToString();
+                txtCliente.Text = customer.FirstName + " " + customer.LastName1 + " " + customer.LastName2;
                 txtNotasGenerales.Text = training.Notes;
                 btnLimpiar.Enabled = true;
+                btnImprimir.Enabled = true;
 
                 //cargamos la lista recuperada en la lista de ejercicios del form
                 trainingLines = trainingLineList;
@@ -551,7 +584,10 @@ namespace RutinApp
                     //recuperamos la descripción del ejercicio
                     Exercise exercise = await exerciseController.GetExercise(trainingLine.ExerciseID);
 
-                    ListItem newItem = new ListItem(exercise.Description, trainingLine.ID,exercise.Image);
+                    Category category = await categoryController.GetCategory(exercise.CategoryID);
+                    MuscleGroup muscleGroup = await muscleGroupController.GetMuscleGroup(category.MuscleGroupID);
+
+                    ListItem newItem = new ListItem(exercise.Description, trainingLine.ID, exercise.Image, muscleGroup.Description);
                     // Agregar elementos al ListBox con Tags asociados
                     lstEjercicios.Items.Add(newItem);
                 }
@@ -603,15 +639,15 @@ namespace RutinApp
         }
 
         private void ChangeExcerciseImage(string image)
-        {       
+        {
             try
             {
-                pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources/exercisePictures", image + ".jpg"));              
+                pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources/exercisePictures", image + ".jpg"));
             }
             catch (FileNotFoundException)
             {
                 // Set the default image here
-                pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "rutinApp.jpg"));             
+                pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources/exercisePictures", "noPicFound.jpg"));
             }
         }
         private async Task<bool> VerifyApiAvailability()
@@ -655,6 +691,113 @@ namespace RutinApp
                 Application.Exit();
             }
         }
+        private void btnImprimir_Click(object sender, EventArgs e)
+        {
+            exercisesToPrint.Clear();
+            for (int i = 0; i < trainingLines.Count; i++)
+            {
+                var trainingLine = trainingLines[i];
 
+                // Crea un nuevo ExerciseToPrint con los datos necesarios
+                ExerciseToPrint exerciseToPrint = new ExerciseToPrint(
+                    (i + 1).ToString() + "-" + ((ListItem)lstEjercicios.Items[i]).MuscleGroup + "\n" + ((ListItem)lstEjercicios.Items[i]).Text,
+                    trainingLine.Sets,
+                    trainingLine.Repetitions,
+                    trainingLine.Weight,
+                    trainingLine.Recovery,
+                    trainingLine.Others,
+                    trainingLine.Notes,
+                    string.IsNullOrEmpty(((ListItem)lstEjercicios.Items[i]).Image) ? "noPicFound" : ((ListItem)lstEjercicios.Items[i]).Image,
+                    dtpFechaInicio.Value.ToString("dd/MM/yyyy"),
+                    dtpFechaFin.Value.ToString("dd/MM/yyyy"),
+                    txtCliente.Text,
+                    int.Parse(txtCliente.Tag.ToString()),
+                    txtNotasGenerales.Text,
+                    txtdias.Text
+                );
+
+                // Añade el ExerciseToPrint a la lista
+                exercisesToPrint.Add(exerciseToPrint);
+            }
+            GenerarPDF.CrearPDF(exercisesToPrint);
+        }
+        private void btnClientes_Click(object sender, EventArgs e)
+        {
+            // Crear una instancia del formulario secundario
+            frmSelectorClientes popupForm = new frmSelectorClientes();
+
+            // Mostrar el formulario secundario como un cuadro de diálogo modal
+            popupForm.ShowDialog();
+            if (popupForm.iDCustomer != 0)
+            {
+                //Asignamos el valor recuperado del id del training a la variable global
+                txtCliente.Tag = popupForm.iDCustomer;
+                txtCliente.Text = popupForm.customerName.ToString();
+            }
+        }
+
+        private void txtdias_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // Verificar si el carácter es un dígito o una tecla de control
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                // Si no es un dígito ni una tecla de control, cancelar la entrada
+                e.Handled = true;
+            }
+        }
+
+        private void lstEjercicios_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (this.lstEjercicios.SelectedItem == null)
+            {
+                return;
+            }
+            int index = lstEjercicios.SelectedIndex;
+            ChangeExcerciseImage(((ListItem)lstEjercicios.SelectedItem).Image);
+            CleanExerciseTextbox();
+            fillTextBox(trainingLines[index]);
+            btnBorrar.Enabled = true;
+            // Iniciar el arrastre y soltar con el ítem seleccionado
+            this.lstEjercicios.DoDragDrop(this.lstEjercicios.SelectedItem, DragDropEffects.Move);
+        }
+
+        private void lstEjercicios_DragOver(object sender, DragEventArgs e)
+        {
+            // Permitir el efecto de mover
+            e.Effect = DragDropEffects.Move;
+        }
+
+        private void lstEjercicios_DragDrop(object sender, DragEventArgs e)
+        {
+            // Obtener el índice del ítem de destino
+            Point point = this.lstEjercicios.PointToClient(new Point(e.X, e.Y));
+            int index = this.lstEjercicios.IndexFromPoint(point);
+
+            // Si el índice es -1, el ítem se suelta fuera del ListBox
+            if (index < 0)
+            {
+                index = this.lstEjercicios.Items.Count - 1;
+            }
+
+            // Obtener el ítem arrastrado como ListItem
+            ListItem data = e.Data.GetData(typeof(ListItem)) as ListItem;
+
+            // Eliminar el ítem arrastrado de su posición original y añadirlo en la nueva posición
+            this.lstEjercicios.Items.Remove(data);
+
+            // Obtén el objeto TrainingLine asociado al ListItem
+            TrainingLine trainingLineToRemove = trainingLines.FirstOrDefault(tl => tl.ID == data.Tag);
+
+            // Elimina el objeto de la lista de objetos
+            if (trainingLineToRemove != null)
+            {
+                trainingLines.Remove(trainingLineToRemove);
+            }
+            // Lo añadimos a su nueva posicion
+            trainingLines.Insert(index, trainingLineToRemove);
+            this.lstEjercicios.Items.Insert(index, data);
+
+            btnGuardar.Enabled = true;
+        }      
     }
 }

@@ -10,8 +10,9 @@ namespace RutinApp.Models
         public DateTime EndDate { get; set; }
         public int CustomerID { get; set; }
         public string Notes { get; set; }
+        public string Days { get; set; }
 
-        public Training(int id, string description, DateTime startDate, DateTime endDate, int idClient, string notes, DateTime lastUpdate)
+        public Training(int id, string description, DateTime startDate, DateTime endDate, int idClient, string notes, string days)
         {
             ID = id;
             Description = description;
@@ -19,6 +20,7 @@ namespace RutinApp.Models
             EndDate = endDate;
             CustomerID = idClient;
             Notes = notes;
+            Days = days;
         }
     }
 }

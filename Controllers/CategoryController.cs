@@ -34,6 +34,28 @@ namespace RutinApp.Controllers
             }
 
         }
+       
+        public async Task<Category> GetCategory(int id)
+        {
+            try
+            {                
+                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Category/{id}");
+                response.EnsureSuccessStatusCode();
+
+                string responseJson = await response.Content.ReadAsStringAsync();
+
+                Category category = JsonConvert.DeserializeObject<Category>(responseJson);
+
+                return category;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+
+        }
 
     }
 }

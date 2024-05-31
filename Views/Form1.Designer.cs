@@ -52,6 +52,9 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            btnClientes = new Button();
+            txtdias = new TextBox();
+            label14 = new Label();
             txtDescripcion = new TextBox();
             label13 = new Label();
             txtCliente = new TextBox();
@@ -69,6 +72,7 @@
             pbExercise = new PictureBox();
             btnBorrar = new Button();
             bsTraining = new BindingSource(components);
+            btnImprimir = new Button();
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
@@ -92,6 +96,7 @@
             // 
             // lstEjercicios
             // 
+            lstEjercicios.AllowDrop = true;
             lstEjercicios.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lstEjercicios.FormattingEnabled = true;
             lstEjercicios.ItemHeight = 15;
@@ -101,6 +106,9 @@
             lstEjercicios.Size = new Size(551, 94);
             lstEjercicios.TabIndex = 3;
             lstEjercicios.Click += lstEjercicios_Click;
+            lstEjercicios.DragDrop += lstEjercicios_DragDrop;
+            lstEjercicios.DragOver += lstEjercicios_DragOver;
+            lstEjercicios.MouseDown += lstEjercicios_MouseDown;
             // 
             // pbFront
             // 
@@ -328,6 +336,9 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(btnClientes);
+            tabPage2.Controls.Add(txtdias);
+            tabPage2.Controls.Add(label14);
             tabPage2.Controls.Add(txtDescripcion);
             tabPage2.Controls.Add(label13);
             tabPage2.Controls.Add(txtCliente);
@@ -346,6 +357,34 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "Datos del programa";
             tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnClientes
+            // 
+            btnClientes.BackgroundImage = Properties.Resources.buscar;
+            btnClientes.BackgroundImageLayout = ImageLayout.Zoom;
+            btnClientes.Location = new Point(774, 165);
+            btnClientes.Name = "btnClientes";
+            btnClientes.Size = new Size(23, 23);
+            btnClientes.TabIndex = 8;
+            btnClientes.UseVisualStyleBackColor = true;
+            btnClientes.Click += btnClientes_Click;
+            // 
+            // txtdias
+            // 
+            txtdias.Location = new Point(603, 132);
+            txtdias.Name = "txtdias";
+            txtdias.Size = new Size(34, 23);
+            txtdias.TabIndex = 7;
+            txtdias.KeyPress += txtdias_KeyPress;
+            // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(485, 135);
+            label14.Name = "label14";
+            label14.Size = new Size(113, 15);
+            label14.TabIndex = 6;
+            label14.Text = "Días entrenamiento:";
             // 
             // txtDescripcion
             // 
@@ -366,7 +405,8 @@
             // 
             // txtCliente
             // 
-            txtCliente.Location = new Point(601, 135);
+            txtCliente.Enabled = false;
+            txtCliente.Location = new Point(603, 165);
             txtCliente.Margin = new Padding(3, 2, 3, 2);
             txtCliente.Name = "txtCliente";
             txtCliente.Size = new Size(194, 23);
@@ -375,7 +415,7 @@
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(545, 137);
+            label12.Location = new Point(550, 168);
             label12.Name = "label12";
             label12.Size = new Size(47, 15);
             label12.TabIndex = 4;
@@ -384,7 +424,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(500, 105);
+            label11.Location = new Point(510, 109);
             label11.Name = "label11";
             label11.Size = new Size(88, 15);
             label11.TabIndex = 4;
@@ -393,7 +433,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(485, 76);
+            label10.Location = new Point(497, 80);
             label10.Name = "label10";
             label10.Size = new Size(101, 15);
             label10.TabIndex = 4;
@@ -402,7 +442,7 @@
             // dtpFechaFin
             // 
             dtpFechaFin.Format = DateTimePickerFormat.Short;
-            dtpFechaFin.Location = new Point(601, 103);
+            dtpFechaFin.Location = new Point(603, 103);
             dtpFechaFin.Margin = new Padding(3, 2, 3, 2);
             dtpFechaFin.Name = "dtpFechaFin";
             dtpFechaFin.Size = new Size(112, 23);
@@ -411,7 +451,7 @@
             // dtpFechaInicio
             // 
             dtpFechaInicio.Format = DateTimePickerFormat.Short;
-            dtpFechaInicio.Location = new Point(601, 74);
+            dtpFechaInicio.Location = new Point(603, 74);
             dtpFechaInicio.Margin = new Padding(3, 2, 3, 2);
             dtpFechaInicio.Name = "dtpFechaInicio";
             dtpFechaInicio.Size = new Size(110, 23);
@@ -451,7 +491,6 @@
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Enabled = false;
             btnLimpiar.Location = new Point(682, 190);
             btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
@@ -489,7 +528,7 @@
             // 
             pbExercise.BackColor = Color.Transparent;
             pbExercise.Image = Properties.Resources.rutinApp;
-            pbExercise.Location = new Point(55, 51);
+            pbExercise.Location = new Point(55, 19);
             pbExercise.Margin = new Padding(3, 2, 3, 2);
             pbExercise.Name = "pbExercise";
             pbExercise.Size = new Size(151, 170);
@@ -509,11 +548,24 @@
             btnBorrar.UseVisualStyleBackColor = true;
             btnBorrar.Click += btnBorrar_Click;
             // 
+            // btnImprimir
+            // 
+            btnImprimir.BackgroundImage = Properties.Resources.imprimir;
+            btnImprimir.BackgroundImageLayout = ImageLayout.Zoom;
+            btnImprimir.Enabled = false;
+            btnImprimir.Location = new Point(7, 213);
+            btnImprimir.Name = "btnImprimir";
+            btnImprimir.Size = new Size(51, 48);
+            btnImprimir.TabIndex = 9;
+            btnImprimir.UseVisualStyleBackColor = true;
+            btnImprimir.Click += btnImprimir_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(822, 506);
+            Controls.Add(btnImprimir);
             Controls.Add(pbExercise);
             Controls.Add(btnRecuperar);
             Controls.Add(btnGuardar);
@@ -583,5 +635,9 @@
         private TextBox txtDescripcion;
         private Label label13;
         private BindingSource bsTraining;
+        private Button btnImprimir;
+        private TextBox txtdias;
+        private Label label14;
+        private Button btnClientes;
     }
 }

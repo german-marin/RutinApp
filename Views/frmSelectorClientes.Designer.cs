@@ -1,6 +1,6 @@
 ﻿namespace RutinApp.Views
 {
-    partial class frmSelectorRutinas
+    partial class frmSelectorClientes
     {
         /// <summary>
         /// Required designer variable.
@@ -29,21 +29,20 @@
         private void InitializeComponent()
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
-            dgvRutinas = new DataGridView();
+            dgvClientes = new DataGridView();
             Column3 = new DataGridViewTextBoxColumn();
             Column1 = new DataGridViewTextBoxColumn();
             Column2 = new DataGridViewTextBoxColumn();
             btnRecuperar = new Button();
-            btnEliminar = new Button();
-            ((System.ComponentModel.ISupportInitialize)dgvRutinas).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
             SuspendLayout();
             // 
-            // dgvRutinas
+            // dgvClientes
             // 
-            dgvRutinas.AllowUserToAddRows = false;
-            dgvRutinas.AllowUserToDeleteRows = false;
-            dgvRutinas.BorderStyle = BorderStyle.Fixed3D;
-            dgvRutinas.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvClientes.AllowUserToAddRows = false;
+            dgvClientes.AllowUserToDeleteRows = false;
+            dgvClientes.BorderStyle = BorderStyle.Fixed3D;
+            dgvClientes.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
@@ -51,20 +50,20 @@
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvRutinas.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
-            dgvRutinas.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvRutinas.Columns.AddRange(new DataGridViewColumn[] { Column3, Column1, Column2 });
-            dgvRutinas.Location = new Point(10, 9);
-            dgvRutinas.Margin = new Padding(3, 2, 3, 2);
-            dgvRutinas.MultiSelect = false;
-            dgvRutinas.Name = "dgvRutinas";
-            dgvRutinas.ReadOnly = true;
-            dgvRutinas.RowHeadersVisible = false;
-            dgvRutinas.RowHeadersWidth = 51;
-            dgvRutinas.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvRutinas.Size = new Size(356, 293);
-            dgvRutinas.TabIndex = 0;
-            dgvRutinas.DoubleClick += dgvRutinas_DoubleClick;
+            dgvClientes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dgvClientes.Columns.AddRange(new DataGridViewColumn[] { Column3, Column1, Column2 });
+            dgvClientes.Location = new Point(10, 9);
+            dgvClientes.Margin = new Padding(3, 2, 3, 2);
+            dgvClientes.MultiSelect = false;
+            dgvClientes.Name = "dgvClientes";
+            dgvClientes.ReadOnly = true;
+            dgvClientes.RowHeadersVisible = false;
+            dgvClientes.RowHeadersWidth = 51;
+            dgvClientes.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvClientes.Size = new Size(356, 293);
+            dgvClientes.TabIndex = 0;
+            dgvClientes.MouseDoubleClick += dgvClientes_MouseDoubleClick;
             // 
             // Column3
             // 
@@ -78,14 +77,14 @@
             // Column1
             // 
             Column1.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Column1.HeaderText = "Título rutina";
+            Column1.HeaderText = "Nombre";
             Column1.MinimumWidth = 6;
             Column1.Name = "Column1";
             Column1.ReadOnly = true;
             // 
             // Column2
             // 
-            Column2.HeaderText = "Cliente";
+            Column2.HeaderText = "Telefono";
             Column2.MinimumWidth = 6;
             Column2.Name = "Column2";
             Column2.ReadOnly = true;
@@ -93,48 +92,35 @@
             // 
             // btnRecuperar
             // 
-            btnRecuperar.Location = new Point(45, 312);
+            btnRecuperar.Location = new Point(117, 307);
             btnRecuperar.Margin = new Padding(3, 2, 3, 2);
             btnRecuperar.Name = "btnRecuperar";
             btnRecuperar.Size = new Size(133, 22);
             btnRecuperar.TabIndex = 1;
-            btnRecuperar.Text = "Recuperar Rutina";
+            btnRecuperar.Text = "Seleccionar Cliente";
             btnRecuperar.UseVisualStyleBackColor = true;
             btnRecuperar.Click += btnRecuperar_Click;
             // 
-            // btnEliminar
-            // 
-            btnEliminar.Location = new Point(200, 312);
-            btnEliminar.Margin = new Padding(3, 2, 3, 2);
-            btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(133, 22);
-            btnEliminar.TabIndex = 1;
-            btnEliminar.Text = "Eliminar Rutina";
-            btnEliminar.UseVisualStyleBackColor = true;
-            btnEliminar.Click += btnEliminar_Click;
-            // 
-            // frmSelectorRutinas
+            // frmSelectorClientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(376, 340);
-            Controls.Add(btnEliminar);
             Controls.Add(btnRecuperar);
-            Controls.Add(dgvRutinas);
+            Controls.Add(dgvClientes);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Margin = new Padding(3, 2, 3, 2);
-            Name = "frmSelectorRutinas";
+            Name = "frmSelectorClientes";
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Seleccione rutina a cargar";
-            ((System.ComponentModel.ISupportInitialize)dgvRutinas).EndInit();
+            Text = "Seleccione cliente a cargar";
+            ((System.ComponentModel.ISupportInitialize)dgvClientes).EndInit();
             ResumeLayout(false);
         }
 
         #endregion
 
-        private DataGridView dgvRutinas;
+        private DataGridView dgvClientes;
         private Button btnRecuperar;
-        private Button btnEliminar;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
