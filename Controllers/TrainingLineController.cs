@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RutinApp.Models;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace RutinApp.Controllers
@@ -12,6 +13,7 @@ namespace RutinApp.Controllers
         public TrainingLineController()
         {
             client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenManager.Token);
         }
 
         public async Task<List<TrainingLine>> GetTrainingLinesOfTraining(int id)

@@ -599,8 +599,7 @@ namespace RutinApp
         }
 
         private void trvGruposMusculares_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            //if (e.Node.Parent == null) // Check if it's a parent node
+        {          
             if (e.Node.Level == 0)
             {
                 ChangeMuscleGroupImage(e.Node);
@@ -616,7 +615,6 @@ namespace RutinApp
                 var tagData = (Tuple<int, string>)e.Node.Tag;
                 string image = tagData.Item2; // Get the Image from the Tuple  
                 ChangeExcerciseImage(image);
-
             }
         }
 
@@ -656,10 +654,8 @@ namespace RutinApp
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // URL con la dirección del punto de entrada de la API
-                    //string apiUrl = "https://localhost:7137/api/MuscleGroup";
-                    string apiUrl = $"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup";
-
+                    // URL con la dirección del punto de entrada de salud
+                    string apiUrl = $"{ApiConfiguration.ApiBaseUrl}/health";
                     HttpResponseMessage response = await client.GetAsync(apiUrl);
 
                     if (response.IsSuccessStatusCode)

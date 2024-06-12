@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RutinApp.Models;
+using System.Net.Http.Headers;
 
 namespace RutinApp.Controllers
 {
@@ -10,12 +11,13 @@ namespace RutinApp.Controllers
         public  MuscleGroupController()
         {
             client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenManager.Token);
         }
                 
         public async Task<List<MuscleGroup>> GetAllMuscleGroup()
         {
             try
-            {        
+            {         
 
                 //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/MuscleGroup");
                 HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup");

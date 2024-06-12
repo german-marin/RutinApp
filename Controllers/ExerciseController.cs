@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RutinApp.Models;
+using System.Net.Http.Headers;
 
 namespace RutinApp.Controllers
 {
@@ -10,6 +11,7 @@ namespace RutinApp.Controllers
         public ExerciseController()
         {
             client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenManager.Token);
         }
 
         public async Task<List<Exercise>> GetCategoryExercises(int id)
