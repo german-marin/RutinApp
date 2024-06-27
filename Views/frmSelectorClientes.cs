@@ -23,6 +23,7 @@ namespace RutinApp.Views
 
             if (customerList != null)
             {
+                dgvClientes.Rows.Clear();
                 foreach (Customer customer in customerList)
                 {
                     DataGridViewRow row = new DataGridViewRow();
@@ -53,7 +54,7 @@ namespace RutinApp.Views
             cargarCliente();
         }
 
-        private void cargarCliente() 
+        private void cargarCliente()
         {
             if (dgvClientes.SelectedRows.Count > 0)
             {
@@ -65,6 +66,40 @@ namespace RutinApp.Views
                     iDCustomer = (int)selectedRow.Cells[0].Value;
                     customerName = selectedRow.Cells[1].Value.ToString();
                     this.Close();
+                }
+            }
+        }
+
+        private void btnEditar_Click(object sender, EventArgs e)
+        {
+            // Crear una instancia del formulario secundario
+            frmAltaCliente popupForm = new frmAltaCliente();
+            popupForm.IDCustomer = int.Parse(dgvClientes.SelectedRows[0].Cells[0].Value.ToString());
+
+            // Mostrar el formulario secundario como un cuadro de diálogo modal
+            popupForm.ShowDialog();
+            LoadGrid();
+        }
+        private void btnNew_Click(object sender, EventArgs e)
+        {
+            // Crear una instancia del formulario secundario
+            frmAltaCliente popupForm = new frmAltaCliente();
+
+            // Mostrar el formulario secundario como un cuadro de diálogo modal
+            popupForm.ShowDialog();
+            LoadGrid();
+        }
+
+        private async void btnEliminar_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show("¿Estás seguro de que deseas borrar este cliente?", "Confirmar borrado", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                var deleteCompleted = await customerController.DeleteCustomer(int.Parse(dgvClientes.SelectedRows[0].Cells[0].Value.ToString()));
+                if (deleteCompleted)
+                {
+                    LoadGrid();
                 }
             }
         }

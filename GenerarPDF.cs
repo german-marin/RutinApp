@@ -16,9 +16,9 @@ namespace RutinApp
 {
     public partial class GenerarPDF
     {
-        public static void CrearPDF(List<ExerciseToPrint> exercisesToPrint)
+        public static void CrearPDF(List<ExerciseToPrint> exercisesToPrint, string pdfPath)
         {
-            string pdfPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "rutina.pdf");
+            //string pdfPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "rutina.pdf");
             string logoPath = Path.Combine(Application.StartupPath, "Resources\\rutinApp.jpg");
 
             // Configurar fuente

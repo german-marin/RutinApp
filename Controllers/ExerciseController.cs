@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RutinApp.Models;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace RutinApp.Controllers
 {
@@ -31,7 +32,6 @@ namespace RutinApp.Controllers
             }
             catch (Exception ex)
             {
-                //mirar como controlar esta excepción correctamente
                 MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
@@ -41,8 +41,6 @@ namespace RutinApp.Controllers
         {
             try
             {
-
-                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/Exercise/" + id);
                 HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Exercise/{id}");
                 response.EnsureSuccessStatusCode();
 
@@ -60,6 +58,104 @@ namespace RutinApp.Controllers
                 return null;
             }
 
+        }
+
+        public async Task<bool> UpdateExercise(Exercise exercise)
+        {
+            try
+            {
+                string json = JsonConvert.SerializeObject(exercise);
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PutAsync($"{ApiConfiguration.ApiBaseUrl}/api/Exercise/{exercise.ID}", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    // Manejar el caso de código de estado de respuesta no exitoso
+                    MessageBox.Show($"Error en la solicitud: {response.StatusCode}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("No se pudo realizar la modificación: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Manejar otros errores
+                MessageBox.Show("Error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+        public async Task<bool> InsertExercise(Exercise exercise)
+        {
+            try
+            {
+                // Serializa el objeto exercise a formato JSON
+                string json = JsonConvert.SerializeObject(exercise);
+
+                // Configura el contenido de la solicitud
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                // Realiza la solicitud POST               
+                HttpResponseMessage response = await client.PostAsync($"{ApiConfiguration.ApiBaseUrl}/api/Exercise", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    // Manejar el caso de código de estado de respuesta no exitoso
+                    MessageBox.Show($"Error en la solicitud: {response.StatusCode}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("No se pudo realizar la inserción: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Manejar otros errores
+                MessageBox.Show("Error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
+        public async Task<bool> DeleteExercise(int id)
+        {
+            try
+            {
+                HttpResponseMessage response = await client.DeleteAsync($"{ApiConfiguration.ApiBaseUrl}/api/Exercise/DeleteExercise?id={id}");
+                response.EnsureSuccessStatusCode();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    // Manejar el caso de código de estado de respuesta no exitoso
+                    MessageBox.Show($"Error en la solicitud: {response.StatusCode}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                MessageBox.Show("No se pudo realizar la eliminación: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Manejar otros errores
+                MessageBox.Show("Error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
         }
     }
 }

@@ -57,7 +57,7 @@
             btnCancel.Location = new Point(321, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(25, 25);
-            btnCancel.TabIndex = 0;
+            btnCancel.TabIndex = 2;
             btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
@@ -141,6 +141,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmLogin";
             TopMost = true;
+            Load += frmLogin_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();

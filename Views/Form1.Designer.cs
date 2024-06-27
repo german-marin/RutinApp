@@ -31,7 +31,6 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             trvGruposMusculares = new TreeView();
-            lstEjercicios = new ListBox();
             pbFront = new PictureBox();
             pbBack = new PictureBox();
             panel1 = new Panel();
@@ -73,6 +72,16 @@
             btnBorrar = new Button();
             bsTraining = new BindingSource(components);
             btnImprimir = new Button();
+            menuStrip1 = new MenuStrip();
+            tsmImprimir = new ToolStripMenuItem();
+            imprimirRutinaToolStripMenuItem = new ToolStripMenuItem();
+            editarToolStripMenuItem = new ToolStripMenuItem();
+            tsmAltaCliente = new ToolStripMenuItem();
+            mantenimientoDeClientesToolStripMenuItem = new ToolStripMenuItem();
+            mantenimientoDeEjerciciosToolStripMenuItem = new ToolStripMenuItem();
+            ayudaToolStripMenuItem = new ToolStripMenuItem();
+            lstEjercicios = new ListBox();
+            sobreRutinAPPToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
@@ -81,6 +90,7 @@
             tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pbExercise).BeginInit();
             ((System.ComponentModel.ISupportInitialize)bsTraining).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // trvGruposMusculares
@@ -93,22 +103,6 @@
             trvGruposMusculares.BeforeExpand += trvGruposMusculares_BeforeExpand;
             trvGruposMusculares.AfterSelect += trvGruposMusculares_AfterSelect;
             trvGruposMusculares.NodeMouseDoubleClick += trvGruposMusculares_NodeMouseDoubleClick;
-            // 
-            // lstEjercicios
-            // 
-            lstEjercicios.AllowDrop = true;
-            lstEjercicios.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lstEjercicios.FormattingEnabled = true;
-            lstEjercicios.ItemHeight = 15;
-            lstEjercicios.Location = new Point(261, 9);
-            lstEjercicios.Margin = new Padding(3, 2, 3, 2);
-            lstEjercicios.Name = "lstEjercicios";
-            lstEjercicios.Size = new Size(551, 94);
-            lstEjercicios.TabIndex = 3;
-            lstEjercicios.Click += lstEjercicios_Click;
-            lstEjercicios.DragDrop += lstEjercicios_DragDrop;
-            lstEjercicios.DragOver += lstEjercicios_DragOver;
-            lstEjercicios.MouseDown += lstEjercicios_MouseDown;
             // 
             // pbFront
             // 
@@ -155,7 +149,7 @@
             panel1.Controls.Add(label4);
             panel1.Controls.Add(label3);
             panel1.Controls.Add(label1);
-            panel1.Location = new Point(260, 123);
+            panel1.Location = new Point(260, 141);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
             panel1.Size = new Size(416, 138);
@@ -313,7 +307,7 @@
             // 
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
-            tabControl1.Location = new Point(3, 267);
+            tabControl1.Location = new Point(3, 285);
             tabControl1.Margin = new Padding(3, 2, 3, 2);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -447,6 +441,7 @@
             dtpFechaFin.Name = "dtpFechaFin";
             dtpFechaFin.Size = new Size(112, 23);
             dtpFechaFin.TabIndex = 3;
+            dtpFechaFin.Value = new DateTime(2024, 7, 27, 10, 32, 5, 856);
             // 
             // dtpFechaInicio
             // 
@@ -456,7 +451,6 @@
             dtpFechaInicio.Name = "dtpFechaInicio";
             dtpFechaInicio.Size = new Size(110, 23);
             dtpFechaInicio.TabIndex = 2;
-            dtpFechaInicio.Value = new DateTime(2023, 11, 30, 15, 48, 18, 0);
             // 
             // label9
             // 
@@ -480,7 +474,7 @@
             // btnAñadir
             // 
             btnAñadir.Enabled = false;
-            btnAñadir.Location = new Point(682, 214);
+            btnAñadir.Location = new Point(682, 232);
             btnAñadir.Margin = new Padding(3, 2, 3, 2);
             btnAñadir.Name = "btnAñadir";
             btnAñadir.Size = new Size(118, 22);
@@ -491,7 +485,7 @@
             // 
             // btnLimpiar
             // 
-            btnLimpiar.Location = new Point(682, 190);
+            btnLimpiar.Location = new Point(682, 208);
             btnLimpiar.Margin = new Padding(3, 2, 3, 2);
             btnLimpiar.Name = "btnLimpiar";
             btnLimpiar.Size = new Size(118, 22);
@@ -504,7 +498,7 @@
             // 
             btnGuardar.Enabled = false;
             btnGuardar.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            btnGuardar.Location = new Point(691, 124);
+            btnGuardar.Location = new Point(691, 142);
             btnGuardar.Margin = new Padding(3, 2, 3, 2);
             btnGuardar.Name = "btnGuardar";
             btnGuardar.Size = new Size(100, 39);
@@ -515,7 +509,7 @@
             // 
             // btnRecuperar
             // 
-            btnRecuperar.Location = new Point(682, 166);
+            btnRecuperar.Location = new Point(682, 184);
             btnRecuperar.Margin = new Padding(3, 2, 3, 2);
             btnRecuperar.Name = "btnRecuperar";
             btnRecuperar.Size = new Size(118, 22);
@@ -528,7 +522,7 @@
             // 
             pbExercise.BackColor = Color.Transparent;
             pbExercise.Image = Properties.Resources.rutinApp;
-            pbExercise.Location = new Point(55, 19);
+            pbExercise.Location = new Point(55, 37);
             pbExercise.Margin = new Padding(3, 2, 3, 2);
             pbExercise.Name = "pbExercise";
             pbExercise.Size = new Size(151, 170);
@@ -539,7 +533,7 @@
             // btnBorrar
             // 
             btnBorrar.Enabled = false;
-            btnBorrar.Location = new Point(682, 240);
+            btnBorrar.Location = new Point(682, 258);
             btnBorrar.Margin = new Padding(3, 2, 3, 2);
             btnBorrar.Name = "btnBorrar";
             btnBorrar.Size = new Size(118, 22);
@@ -553,18 +547,99 @@
             btnImprimir.BackgroundImage = Properties.Resources.imprimir;
             btnImprimir.BackgroundImageLayout = ImageLayout.Zoom;
             btnImprimir.Enabled = false;
-            btnImprimir.Location = new Point(7, 213);
+            btnImprimir.Location = new Point(7, 231);
             btnImprimir.Name = "btnImprimir";
             btnImprimir.Size = new Size(51, 48);
             btnImprimir.TabIndex = 9;
             btnImprimir.UseVisualStyleBackColor = true;
             btnImprimir.Click += btnImprimir_Click;
             // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { tsmImprimir, editarToolStripMenuItem, ayudaToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(822, 24);
+            menuStrip1.TabIndex = 10;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // tsmImprimir
+            // 
+            tsmImprimir.DropDownItems.AddRange(new ToolStripItem[] { imprimirRutinaToolStripMenuItem });
+            tsmImprimir.Name = "tsmImprimir";
+            tsmImprimir.Size = new Size(60, 20);
+            tsmImprimir.Text = "Archivo";
+            // 
+            // imprimirRutinaToolStripMenuItem
+            // 
+            imprimirRutinaToolStripMenuItem.Enabled = false;
+            imprimirRutinaToolStripMenuItem.Name = "imprimirRutinaToolStripMenuItem";
+            imprimirRutinaToolStripMenuItem.Size = new Size(180, 22);
+            imprimirRutinaToolStripMenuItem.Text = "Imprimir rutina";
+            imprimirRutinaToolStripMenuItem.Click += imprimirRutinaToolStripMenuItem_Click;
+            // 
+            // editarToolStripMenuItem
+            // 
+            editarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { tsmAltaCliente, mantenimientoDeClientesToolStripMenuItem, mantenimientoDeEjerciciosToolStripMenuItem });
+            editarToolStripMenuItem.Name = "editarToolStripMenuItem";
+            editarToolStripMenuItem.Size = new Size(49, 20);
+            editarToolStripMenuItem.Text = "Editar";
+            // 
+            // tsmAltaCliente
+            // 
+            tsmAltaCliente.Name = "tsmAltaCliente";
+            tsmAltaCliente.Size = new Size(224, 22);
+            tsmAltaCliente.Text = "Alta cliente";
+            tsmAltaCliente.Click += tsmAltaCliente_Click;
+            // 
+            // mantenimientoDeClientesToolStripMenuItem
+            // 
+            mantenimientoDeClientesToolStripMenuItem.Name = "mantenimientoDeClientesToolStripMenuItem";
+            mantenimientoDeClientesToolStripMenuItem.Size = new Size(224, 22);
+            mantenimientoDeClientesToolStripMenuItem.Text = "Mantenimiento de clientes";
+            mantenimientoDeClientesToolStripMenuItem.Click += mantenimientoDeClientesToolStripMenuItem_Click;
+            // 
+            // mantenimientoDeEjerciciosToolStripMenuItem
+            // 
+            mantenimientoDeEjerciciosToolStripMenuItem.Name = "mantenimientoDeEjerciciosToolStripMenuItem";
+            mantenimientoDeEjerciciosToolStripMenuItem.Size = new Size(224, 22);
+            mantenimientoDeEjerciciosToolStripMenuItem.Text = "Mantenimiento de ejercicios";
+            mantenimientoDeEjerciciosToolStripMenuItem.Click += mantenimientoDeEjerciciosToolStripMenuItem_Click;
+            // 
+            // ayudaToolStripMenuItem
+            // 
+            ayudaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sobreRutinAPPToolStripMenuItem });
+            ayudaToolStripMenuItem.Name = "ayudaToolStripMenuItem";
+            ayudaToolStripMenuItem.Size = new Size(53, 20);
+            ayudaToolStripMenuItem.Text = "Ayuda";
+            // 
+            // lstEjercicios
+            // 
+            lstEjercicios.AllowDrop = true;
+            lstEjercicios.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lstEjercicios.FormattingEnabled = true;
+            lstEjercicios.ItemHeight = 15;
+            lstEjercicios.Location = new Point(261, 27);
+            lstEjercicios.Margin = new Padding(3, 2, 3, 2);
+            lstEjercicios.Name = "lstEjercicios";
+            lstEjercicios.Size = new Size(551, 94);
+            lstEjercicios.TabIndex = 3;
+            lstEjercicios.Click += lstEjercicios_Click;
+            lstEjercicios.DragDrop += lstEjercicios_DragDrop;
+            lstEjercicios.DragOver += lstEjercicios_DragOver;
+            lstEjercicios.MouseDown += lstEjercicios_MouseDown;
+            // 
+            // sobreRutinAPPToolStripMenuItem
+            // 
+            sobreRutinAPPToolStripMenuItem.Name = "sobreRutinAPPToolStripMenuItem";
+            sobreRutinAPPToolStripMenuItem.Size = new Size(180, 22);
+            sobreRutinAPPToolStripMenuItem.Text = "Sobre RutinAPP";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(822, 506);
+            ClientSize = new Size(822, 521);
             Controls.Add(btnImprimir);
             Controls.Add(pbExercise);
             Controls.Add(btnRecuperar);
@@ -575,8 +650,10 @@
             Controls.Add(panel1);
             Controls.Add(lstEjercicios);
             Controls.Add(tabControl1);
+            Controls.Add(menuStrip1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Icon = (Icon)resources.GetObject("$this.Icon");
+            MainMenuStrip = menuStrip1;
             Margin = new Padding(3, 2, 3, 2);
             MaximizeBox = false;
             Name = "Form1";
@@ -592,7 +669,10 @@
             tabPage2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pbExercise).EndInit();
             ((System.ComponentModel.ISupportInitialize)bsTraining).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -639,5 +719,14 @@
         private TextBox txtdias;
         private Label label14;
         private Button btnClientes;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem tsmImprimir;
+        private ToolStripMenuItem imprimirRutinaToolStripMenuItem;
+        private ToolStripMenuItem editarToolStripMenuItem;
+        private ToolStripMenuItem ayudaToolStripMenuItem;
+        private ToolStripMenuItem tsmAltaCliente;
+        private ToolStripMenuItem mantenimientoDeClientesToolStripMenuItem;
+        private ToolStripMenuItem mantenimientoDeEjerciciosToolStripMenuItem;
+        private ToolStripMenuItem sobreRutinAPPToolStripMenuItem;
     }
 }

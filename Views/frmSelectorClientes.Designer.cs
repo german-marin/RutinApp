@@ -28,12 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             dgvClientes = new DataGridView();
             Column3 = new DataGridViewTextBoxColumn();
             Column1 = new DataGridViewTextBoxColumn();
             Column2 = new DataGridViewTextBoxColumn();
             btnRecuperar = new Button();
+            btnNew = new Button();
+            btnEditar = new Button();
+            btnEliminar = new Button();
             ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
             SuspendLayout();
             // 
@@ -43,14 +46,14 @@
             dgvClientes.AllowUserToDeleteRows = false;
             dgvClientes.BorderStyle = BorderStyle.Fixed3D;
             dgvClientes.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Control;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
-            dgvClientes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Control;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgvClientes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvClientes.Columns.AddRange(new DataGridViewColumn[] { Column3, Column1, Column2 });
             dgvClientes.Location = new Point(10, 9);
@@ -92,20 +95,53 @@
             // 
             // btnRecuperar
             // 
-            btnRecuperar.Location = new Point(117, 307);
+            btnRecuperar.Location = new Point(12, 307);
             btnRecuperar.Margin = new Padding(3, 2, 3, 2);
             btnRecuperar.Name = "btnRecuperar";
-            btnRecuperar.Size = new Size(133, 22);
+            btnRecuperar.Size = new Size(117, 22);
             btnRecuperar.TabIndex = 1;
             btnRecuperar.Text = "Seleccionar Cliente";
             btnRecuperar.UseVisualStyleBackColor = true;
             btnRecuperar.Click += btnRecuperar_Click;
+            // 
+            // btnNew
+            // 
+            btnNew.Location = new Point(231, 307);
+            btnNew.Name = "btnNew";
+            btnNew.Size = new Size(62, 23);
+            btnNew.TabIndex = 2;
+            btnNew.Text = "Nuevo";
+            btnNew.UseVisualStyleBackColor = true;
+            btnNew.Click += btnNew_Click;
+            // 
+            // btnEditar
+            // 
+            btnEditar.Location = new Point(154, 307);
+            btnEditar.Name = "btnEditar";
+            btnEditar.Size = new Size(62, 23);
+            btnEditar.TabIndex = 3;
+            btnEditar.Text = "Editar";
+            btnEditar.UseVisualStyleBackColor = true;
+            btnEditar.Click += btnEditar_Click;
+            // 
+            // btnEliminar
+            // 
+            btnEliminar.Location = new Point(305, 307);
+            btnEliminar.Name = "btnEliminar";
+            btnEliminar.Size = new Size(62, 23);
+            btnEliminar.TabIndex = 4;
+            btnEliminar.Text = "Eliminar";
+            btnEliminar.UseVisualStyleBackColor = true;
+            btnEliminar.Click += btnEliminar_Click;
             // 
             // frmSelectorClientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(376, 340);
+            Controls.Add(btnEliminar);
+            Controls.Add(btnEditar);
+            Controls.Add(btnNew);
             Controls.Add(btnRecuperar);
             Controls.Add(dgvClientes);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
@@ -124,5 +160,8 @@
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
+        private Button btnNew;
+        private Button btnEditar;
+        private Button btnEliminar;
     }
 }
