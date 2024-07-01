@@ -17,8 +17,9 @@ namespace RutinApp.Models
         public int CustomerID { get; set; }
         public string GeneralNotes {  get; set; }
         public string Days { get; set; }
+        public string Grip {  get; set; }
 
-        public ExerciseToPrint(string title, string sets, string repetition, string weight, string recovery, string others, string notes, string image, string startDate, string endDate, string customerName, int customerID, string generalNotes, string days)
+        public ExerciseToPrint(string title, string sets, string repetition, string weight, string recovery, string others, string notes, string image, string startDate, string endDate, string customerName, int customerID, string generalNotes, string days, string grip)
         { 
             Title = title;
             Sets = sets; 
@@ -34,6 +35,7 @@ namespace RutinApp.Models
             CustomerID = customerID;
             GeneralNotes = generalNotes;
             Days = days;
+            Grip = grip;
         }
     }
 }

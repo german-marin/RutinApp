@@ -10,7 +10,10 @@ using iText.Kernel.Events;
 using iText.Kernel.Pdf.Canvas;
 using RutinApp.Models;
 using iText.Kernel.Pdf.Canvas.Draw;
-
+using System.Drawing.Imaging;
+using iTextPath = System.IO.Path;  
+using Image = System.Drawing.Image;
+using System.Diagnostics;
 
 namespace RutinApp
 {
@@ -18,7 +21,6 @@ namespace RutinApp
     {
         public static void CrearPDF(List<ExerciseToPrint> exercisesToPrint, string pdfPath)
         {
-            //string pdfPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "rutina.pdf");
             string logoPath = Path.Combine(Application.StartupPath, "Resources\\rutinApp.jpg");
 
             // Configurar fuente
@@ -123,6 +125,13 @@ namespace RutinApp
 
                             // Añadir celda de la imagen                       
                             string imgPath = Path.Combine(Application.StartupPath, "Resources/exercisePictures", exercise.Image.ToString() + ".jpg");
+                            
+                            if (exercise.Grip != "" && exercise.Grip is not null)
+                            {
+                                string overlayImgPath = Path.Combine(Application.StartupPath, "Resources/Grips", exercise.Grip.ToString() + ".jpg");
+                                // Combinar las imágenes y añadir la imagen combinada
+                                imgPath = CombineImages(imgPath, overlayImgPath);
+                            }
                             iText.Layout.Element.Image img = new iText.Layout.Element.Image(ImageDataFactory.Create(imgPath)).SetAutoScale(true);
                             Cell imageCell = new Cell().Add(img);
                             imageCell.SetBorder(Border.NO_BORDER);
@@ -168,19 +177,51 @@ namespace RutinApp
 
                 }
             }
+            //MessageBox.Show("PDF creado exitosamente en " + pdfPath);
+            // Abrir el archivo PDF automáticamente después de guardarlo
+            try
+            {
+                Process.Start(new ProcessStartInfo(pdfPath) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("No se pudo abrir el archivo PDF automáticamente: " + ex.Message);
+            }
+        }
+        // Método para combinar dos imágenes
+        private static string CombineImages(string imgPath1, string imgPath2)
+        {
+            using (Image img1 = Image.FromFile(imgPath1))
+            using (Image img2 = Image.FromFile(imgPath2))
+            {
+                //int width = Math.Max(img1.Width, img2.Width);
+                //int height = Math.Max(img1.Height, img2.Height);
 
-            MessageBox.Show("PDF creado exitosamente en " + pdfPath);
+                //using (Bitmap combinedImage = new Bitmap(width, height))
+                int width = (int)Math.Round(img1.Width * 0.25);
+                
+                using (Bitmap combinedImage = new Bitmap(img1.Width, img1.Height))
+                using (Graphics g = Graphics.FromImage(combinedImage))
+                {
+                    g.Clear(System.Drawing.Color.White);
+                    g.DrawImage(img1, new System.Drawing.Rectangle(0, 0, img1.Width, img1.Height));
+                    //g.DrawImage(img2, new System.Drawing.Rectangle(0, 0, img2.Width, img2.Height));
+                    //g.DrawImage(img2, new System.Drawing.Rectangle(0, 0, 35, 35));
+                    g.DrawImage(img2, new System.Drawing.Rectangle(0, 0, width, width));
+                    string combinedImgPath = iTextPath.Combine(iTextPath.GetTempPath(), "combinedImg.jpg");
+                    combinedImage.Save(combinedImgPath, ImageFormat.Jpeg);
+                    return combinedImgPath;
+                }
+            }
         }
         // Evento para manejar el pie de página
         public class FooterHandler : IEventHandler
         {
             private readonly PdfFont font;
-
             public FooterHandler(PdfFont font)
             {
                 this.font = font;
             }
-
             public void HandleEvent(Event currentEvent)
             {
                 PdfDocumentEvent docEvent = (PdfDocumentEvent)currentEvent;

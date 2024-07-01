@@ -8,6 +8,7 @@ namespace RutinApp.Views
     public partial class frmSelectorClientes : Form
     {
         private CustomerController customerController;
+        private List<Customer> customerList;
         public int iDCustomer { get; set; }
         public string customerName { get; set; }
         public frmSelectorClientes()
@@ -19,29 +20,35 @@ namespace RutinApp.Views
         }
         private async void LoadGrid()
         {
-            List<Customer> customerList = await customerController.GetAllCustomers();
+            customerList = await customerController.GetAllCustomers();
 
             if (customerList != null)
             {
-                dgvClientes.Rows.Clear();
-                foreach (Customer customer in customerList)
-                {
-                    DataGridViewRow row = new DataGridViewRow();
-                    row.CreateCells(dgvClientes);
-
-                    row.Cells[0].Value = customer.ID;
-                    row.Cells[1].Value = customer.FirstName + " " + customer.LastName1 + " " + customer.LastName2;
-                    row.Cells[2].Value = customer.PhoneNumber;
-
-                    dgvClientes.Rows.Add(row);
-
-                }
+                FillGrid(customerList);
             }
             else
             {
-                MessageBox.Show("No se pudo cargar las rutinas.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo cargar los clientes.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+
+        private void FillGrid(List<Customer> customers)
+        {
+            dgvClientes.Rows.Clear();
+            foreach (Customer customer in customers)
+            {
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(dgvClientes);
+
+                row.Cells[0].Value = customer.ID;
+                row.Cells[1].Value = customer.FirstName;
+                row.Cells[2].Value = customer.LastName1;
+                row.Cells[3].Value = customer.LastName2;
+                row.Cells[4].Value = customer.PhoneNumber;
+
+                dgvClientes.Rows.Add(row);
+            }
         }
 
         private void btnRecuperar_Click(object sender, EventArgs e)
@@ -102,6 +109,18 @@ namespace RutinApp.Views
                     LoadGrid();
                 }
             }
+        }
+
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            string filterText = txtFilter.Text.ToLower();
+            var filteredList = customerList.Where(c =>
+                c.FirstName.ToLower().Contains(filterText) ||
+                c.LastName1.ToLower().Contains(filterText) ||
+                c.LastName2.ToLower().Contains(filterText)
+            ).ToList();
+
+            FillGrid(filteredList);
         }
     }
 }
