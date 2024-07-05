@@ -9,9 +9,9 @@ namespace RutinApp.Models
         public string Role { get; set; }
         public int Active { get; set; }
         public DateTime? LastUpdated { get; set; }
+        public string SchemaName { get; set; } // Campo para almacenar el esquema de base de datos del cliente
 
-
-        public User(int id, string username, string password, string role, int active, DateTime? lastUpdated)
+        public User(int id, string username, string password, string role, int active, DateTime? lastUpdated, string schemaName)
         {
             Id = id;
             Username = username;
@@ -19,12 +19,14 @@ namespace RutinApp.Models
             Role = role;
             Active = active;
             LastUpdated = lastUpdated;
+            SchemaName = schemaName;
         }
         public User(string username, string password)
         {
             Username = username;
             Password = password;
             Role = "";
+            SchemaName = "";
         }
     }
 }
