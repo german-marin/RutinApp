@@ -7,8 +7,17 @@ namespace RutinApp.Views
     {
         private TrainingController trainingController;
         private CustomerController customerController;
+        private List<Training> trainingList;
+        private List<TrainingWithCustomer> combinedList = new List<TrainingWithCustomer>();
         public int IDTraining { get; set; }
         public int IDCustomer { get; set; }
+        public class TrainingWithCustomer
+        {
+            public int TrainingID { get; set; }
+            public string TrainingDescription { get; set; }
+            public int CustomerID { get; set; }
+            public string CustomerFullName { get; set; }
+        }
         public frmSelectorRutinas()
         {
             trainingController = new TrainingController();
@@ -18,28 +27,28 @@ namespace RutinApp.Views
         }
         private async void LoadGrid()
         {
-            List<Training> trainingList = await trainingController.GetAllTrainings();
+            trainingList = await trainingController.GetAllTrainings();
 
             if (trainingList != null)
             {
+                combinedList.Clear();
+
                 foreach (Training training in trainingList)
                 {
-                    if ( IDCustomer != 0 && IDCustomer != training.CustomerID )
-                    {
-                        continue;
-                    }
                     Customer customer = await customerController.GetCustomer(training.CustomerID);
 
-                    DataGridViewRow row = new DataGridViewRow();
-                    row.CreateCells(dgvRutinas);
+                    var combinedItem = new TrainingWithCustomer
+                    {
+                        TrainingID = training.ID,
+                        TrainingDescription = training.Description,
+                        CustomerID = training.CustomerID,
+                        CustomerFullName = customer.FirstName + " " + customer.LastName1 + " " + customer.LastName2
+                    };
 
-                    row.Cells[0].Value = training.ID;
-                    row.Cells[1].Value = training.Description;
-                    row.Cells[2].Value = customer.FirstName + " " + customer.LastName1 + " " + customer.LastName2;
-
-                    dgvRutinas.Rows.Add(row);
-
+                    combinedList.Add(combinedItem);
                 }
+
+                ApplyFilterAndLoadGrid();
             }
             else
             {
@@ -47,7 +56,6 @@ namespace RutinApp.Views
             }
 
         }
-
         private async void btnEliminar_Click(object sender, EventArgs e)
         {
             try
@@ -84,12 +92,10 @@ namespace RutinApp.Views
         {
             recuperarRutina();
         }
-
         private void dgvRutinas_DoubleClick(object sender, EventArgs e)
         {
             recuperarRutina();
         }
-
         private void recuperarRutina()
         {
             if (dgvRutinas.SelectedRows.Count > 0)
@@ -106,6 +112,34 @@ namespace RutinApp.Views
                         this.Close();
                     }
                 }
+            }
+        }
+        private void txtFilter_TextChanged(object sender, EventArgs e)
+        {
+            ApplyFilterAndLoadGrid();
+        }
+        
+        private void ApplyFilterAndLoadGrid()
+        {
+            dgvRutinas.Rows.Clear();
+
+            // Filtrar la lista combinada según el texto en el TextBox
+            var filterText = txtFilter.Text.ToLower();
+            var filteredList = combinedList
+                .Where(item => IDCustomer == 0 || item.CustomerID == IDCustomer)
+                .Where(item => string.IsNullOrEmpty(filterText) || item.TrainingDescription.ToLower().Contains(filterText) || item.CustomerFullName.ToLower().Contains(filterText))
+                .ToList();
+
+            foreach (var item in filteredList)
+            {
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(dgvRutinas);
+
+                row.Cells[0].Value = item.TrainingID;
+                row.Cells[1].Value = item.TrainingDescription;
+                row.Cells[2].Value = item.CustomerFullName;
+
+                dgvRutinas.Rows.Add(row);
             }
         }
     }

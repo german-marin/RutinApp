@@ -71,7 +71,7 @@ namespace RutinApp.Views
                 {
                     // Pasamos el id del training al forms principal
                     iDCustomer = (int)selectedRow.Cells[0].Value;
-                    customerName = selectedRow.Cells[1].Value.ToString();
+                    customerName = selectedRow.Cells[1].Value.ToString() + selectedRow.Cells[2].Value.ToString() + selectedRow.Cells[3].Value.ToString();
                     this.Close();
                 }
             }

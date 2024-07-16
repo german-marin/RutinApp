@@ -35,6 +35,8 @@
             Column2 = new DataGridViewTextBoxColumn();
             btnRecuperar = new Button();
             btnEliminar = new Button();
+            label14 = new Label();
+            txtFilter = new TextBox();
             ((System.ComponentModel.ISupportInitialize)dgvRutinas).BeginInit();
             SuspendLayout();
             // 
@@ -93,10 +95,10 @@
             // 
             // btnRecuperar
             // 
-            btnRecuperar.Location = new Point(45, 312);
+            btnRecuperar.Location = new Point(220, 306);
             btnRecuperar.Margin = new Padding(3, 2, 3, 2);
             btnRecuperar.Name = "btnRecuperar";
-            btnRecuperar.Size = new Size(133, 22);
+            btnRecuperar.Size = new Size(68, 48);
             btnRecuperar.TabIndex = 1;
             btnRecuperar.Text = "Recuperar Rutina";
             btnRecuperar.UseVisualStyleBackColor = true;
@@ -104,20 +106,41 @@
             // 
             // btnEliminar
             // 
-            btnEliminar.Location = new Point(200, 312);
+            btnEliminar.Location = new Point(294, 306);
             btnEliminar.Margin = new Padding(3, 2, 3, 2);
             btnEliminar.Name = "btnEliminar";
-            btnEliminar.Size = new Size(133, 22);
+            btnEliminar.Size = new Size(70, 48);
             btnEliminar.TabIndex = 1;
             btnEliminar.Text = "Eliminar Rutina";
             btnEliminar.UseVisualStyleBackColor = true;
             btnEliminar.Click += btnEliminar_Click;
             // 
+            // label14
+            // 
+            label14.AutoSize = true;
+            label14.Location = new Point(7, 322);
+            label14.Name = "label14";
+            label14.Size = new Size(37, 15);
+            label14.TabIndex = 14;
+            label14.Text = "Filtro:";
+            // 
+            // txtFilter
+            // 
+            txtFilter.AcceptsTab = true;
+            txtFilter.Location = new Point(46, 319);
+            txtFilter.Margin = new Padding(3, 2, 3, 2);
+            txtFilter.Name = "txtFilter";
+            txtFilter.Size = new Size(168, 23);
+            txtFilter.TabIndex = 13;
+            txtFilter.TextChanged += txtFilter_TextChanged;
+            // 
             // frmSelectorRutinas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(376, 340);
+            ClientSize = new Size(376, 361);
+            Controls.Add(label14);
+            Controls.Add(txtFilter);
             Controls.Add(btnEliminar);
             Controls.Add(btnRecuperar);
             Controls.Add(dgvRutinas);
@@ -128,6 +151,7 @@
             Text = "Seleccione rutina a cargar";
             ((System.ComponentModel.ISupportInitialize)dgvRutinas).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -138,5 +162,7 @@
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
+        private Label label14;
+        private TextBox txtFilter;
     }
 }

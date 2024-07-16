@@ -249,6 +249,7 @@ namespace RutinApp.Views
             chkbActivo.Checked = ((ListItem)lstEjercicios.SelectedItem).Active;
             editando = true;
             btnNuevoEjercicio.Visible = false;
+            btnDelete.Enabled = true;
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)

@@ -825,7 +825,6 @@ namespace RutinApp
             {
                 //Asignamos el valor recuperado del id del training a la variable global
                 txtCliente.Tag = popupForm.iDCustomer;
-                txtCliente.Text = popupForm.customerName.ToString();
             }
         }
 
