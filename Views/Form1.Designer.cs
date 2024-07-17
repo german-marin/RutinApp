@@ -615,8 +615,9 @@
             // sobreRutinAPPToolStripMenuItem
             // 
             sobreRutinAPPToolStripMenuItem.Name = "sobreRutinAPPToolStripMenuItem";
-            sobreRutinAPPToolStripMenuItem.Size = new Size(157, 22);
+            sobreRutinAPPToolStripMenuItem.Size = new Size(180, 22);
             sobreRutinAPPToolStripMenuItem.Text = "Sobre RutinAPP";
+            sobreRutinAPPToolStripMenuItem.Click += sobreRutinAPPToolStripMenuItem_Click;
             // 
             // lstEjercicios
             // 

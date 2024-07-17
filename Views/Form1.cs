@@ -931,5 +931,10 @@ namespace RutinApp
             }
         }
 
+        private void sobreRutinAPPToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmAbout popupForm = new frmAbout();
+            popupForm.ShowDialog();
+        }
     }
 }
