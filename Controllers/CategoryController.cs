@@ -1,63 +1,98 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using RutinApp.Models;
-using System.Net.Http.Headers;
 
 namespace RutinApp.Controllers
 {
     public class CategoryController
     {
-        private HttpClient client;
+        private string connectionString;
 
         public CategoryController()
         {
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenManager.Token);
+            connectionString = DatabaseHelper.GetConnectionString();
         }
 
         public async Task<List<Category>> GetMuscleGroupCategories(int id)
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Category?id={id}");
-                response.EnsureSuccessStatusCode();
+                List<Category> categoryList = new List<Category>();
 
-                string responseJson = await response.Content.ReadAsStringAsync();
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                List<Category> categoryList = JsonConvert.DeserializeObject<List<Category>>(responseJson);
+                    string query = "SELECT * FROM categories WHERE MuscleGroupID = @id";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                Category category = new Category
+                                {
+                                    ID = Convert.ToInt32(reader["ID"]),
+                                    Description = reader["Description"].ToString(),
+                                    MuscleGroupID = Convert.ToInt32(reader["MuscleGroupID"])
+                                };
+                                categoryList.Add(category);
+                            }
+                        }
+                    }
+                }
 
                 return categoryList;
-
             }
             catch (Exception ex)
             {
-                //mirar como controlar esta excepción correctamente
                 MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-
         }
-       
+
         public async Task<Category> GetCategory(int id)
         {
             try
-            {                
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/Category/{id}");
-                response.EnsureSuccessStatusCode();
+            {
+                Category category = null;
 
-                string responseJson = await response.Content.ReadAsStringAsync();
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                Category category = JsonConvert.DeserializeObject<Category>(responseJson);
+                    string query = "SELECT * FROM categories WHERE ID = @id";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                category = new Category
+                                {
+                                    ID = Convert.ToInt32(reader["ID"]),
+                                    Description = reader["Description"].ToString(),
+                                    MuscleGroupID = Convert.ToInt32(reader["MuscleGroupID"])
+                                };
+                            }
+                        }
+                    }
+                }
 
                 return category;
-
             }
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-
         }
-
     }
 }

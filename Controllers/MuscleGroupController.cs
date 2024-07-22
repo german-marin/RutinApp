@@ -1,65 +1,101 @@
-﻿using Newtonsoft.Json;
-using RutinApp.Models;
-using System.Net.Http.Headers;
+﻿using RutinApp.Models;
+using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace RutinApp.Controllers
 {
     public class MuscleGroupController
     {
-        private HttpClient client;
+        private readonly string connectionString;
 
-        public  MuscleGroupController()
+        public MuscleGroupController()
         {
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenManager.Token);
+            connectionString = DatabaseHelper.GetConnectionString();
         }
-                
+
         public async Task<List<MuscleGroup>> GetAllMuscleGroup()
         {
+            var muscleGroupList = new List<MuscleGroup>();
+
             try
-            {         
+            {
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                //HttpResponseMessage response = await client.GetAsync("https://localhost:7137/api/MuscleGroup");
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup");
+                    string query = "SELECT ID, Description, ImageFront, ImageRear FROM musclegroups";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var muscleGroup = new MuscleGroup
+                                {
+                                    ID = Convert.ToInt32(reader["ID"]),
+                                    Description = reader["Description"].ToString(),
+                                    ImageFront = reader["ImageFront"].ToString(),
+                                    ImageRear = reader["ImageRear"].ToString()
+                                };
 
-                response.EnsureSuccessStatusCode();
-
-                string responseJson = await response.Content.ReadAsStringAsync();
-               
-                List<MuscleGroup> muscleGroupList = JsonConvert.DeserializeObject<List<MuscleGroup>>(responseJson);                                                
+                                muscleGroupList.Add(muscleGroup);
+                            }
+                        }
+                    }
+                }
 
                 return muscleGroupList;
-
             }
             catch (Exception ex)
             {
-                //mirar como controlar esta excepción correctamente
-                MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo obtener los grupos musculares. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-
         }
+
         public async Task<MuscleGroup> GetMuscleGroup(int id)
         {
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/MuscleGroup/{id}");
-                response.EnsureSuccessStatusCode();
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                string responseJson = await response.Content.ReadAsStringAsync();
+                    string query = "SELECT ID, Description, ImageFront, ImageRear FROM musclegroups WHERE ID = @id";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
 
-                MuscleGroup muscleGroup = JsonConvert.DeserializeObject<MuscleGroup>(responseJson);
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                var muscleGroup = new MuscleGroup
+                                {
+                                    ID = Convert.ToInt32(reader["ID"]),
+                                    Description = reader["Description"].ToString(),
+                                    ImageFront = reader["ImageFront"].ToString(),
+                                    ImageRear = reader["ImageRear"].ToString()
+                                };
 
-                return muscleGroup;
-
+                                return muscleGroup;
+                            }
+                            else
+                            {
+                                return null;
+                            }
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("No se pudo obtener el grupo muscular. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-
         }
-
     }
 }

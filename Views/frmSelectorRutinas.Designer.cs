@@ -157,12 +157,12 @@
         #endregion
 
         private DataGridView dgvRutinas;
-        private Button btnRecuperar;
         private Button btnEliminar;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn Column2;
         private Label label14;
         private TextBox txtFilter;
+        internal Button btnRecuperar;
     }
 }

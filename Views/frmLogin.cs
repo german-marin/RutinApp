@@ -42,7 +42,7 @@ namespace RutinApp.Views
             if (authResult.IsSuccess)
             {
                 // Almacenar el token en TokenManager
-                TokenManager.Token = ExtractJwtToken(authResult.Token);
+                //TokenManager.Token = ExtractJwtToken(authResult.Token);
 
                 // Cerrar el formulario de login
                 this.Close();

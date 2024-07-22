@@ -1,84 +1,128 @@
 ﻿using Newtonsoft.Json;
 using RutinApp.Models;
-using System.Net.Http.Headers;
+using System;
+using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace RutinApp.Controllers
 {
     public class TrainingLineController
     {
-
-        private HttpClient client;
+        private string connectionString;
 
         public TrainingLineController()
         {
-            client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TokenManager.Token);
+            connectionString = DatabaseHelper.GetConnectionString();
         }
 
         public async Task<List<TrainingLine>> GetTrainingLinesOfTraining(int id)
         {
             try
             {
-                //HttpResponseMessage response = await client.GetAsync($"https://localhost:7137/api/TrainingLine/GetTrainingLinesOfTraining?id={id}");
-                HttpResponseMessage response = await client.GetAsync($"{ApiConfiguration.ApiBaseUrl}/api/TrainingLine/GetTrainingLinesOfTraining?id={id}");
-                response.EnsureSuccessStatusCode();
+                List<TrainingLine> trainingLines = new List<TrainingLine>();
 
-                string responseJson = await response.Content.ReadAsStringAsync();
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                List<TrainingLine> trainingLine = JsonConvert.DeserializeObject<List<TrainingLine>>(responseJson);
+                    string query = "SELECT * FROM TrainingLines WHERE TrainingID = @id";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
 
-                return trainingLine;
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            while (await reader.ReadAsync())
+                            {
+                                var trainingLine = new TrainingLine(
+                                    Convert.ToInt32(reader["ID"]),
+                                    Convert.ToInt32(reader["ExerciseID"]),
+                                    Convert.ToInt32(reader["TrainingID"]),
+                                    reader["Sets"].ToString(),
+                                    reader["Repetitions"].ToString(),
+                                    reader["Weight"].ToString(),
+                                    reader["Recovery"].ToString(),
+                                    reader["Others"].ToString(),
+                                    reader["Notes"].ToString(),
+                                    reader["Grip"].ToString()
+                                );
 
+                                trainingLines.Add(trainingLine);
+                            }
+                        }
+                    }
+                }
+
+                return trainingLines;
             }
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudo obtener la petición. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
             }
-
         }
+
         public async Task<bool> InsertTrainingLine(TrainingLine trainingLine)
         {
             try
             {
-                // Serializa el objeto TrainingLine a formato JSON
-                string json = JsonConvert.SerializeObject(trainingLine);
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                // Configura el contenido de la solicitud
-                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                    string query = @"
+                        INSERT INTO TrainingLines (ExerciseID, TrainingID, Sets, Repetitions, Weight, Recovery, Others, Notes, LastUpdated, Grip)
+                        VALUES (@ExerciseID, @TrainingID, @Sets, @Repetitions, @Weight, @Recovery, @Others, @Notes, datetime('now'), @Grip);
+                        SELECT last_insert_rowid();";
 
-                // Realiza la solicitud POST
-                //HttpResponseMessage response = await client.PostAsync("https://localhost:7137/api/TrainingLine/InsertTrainingLine", content);
-                HttpResponseMessage response = await client.PostAsync($"{ApiConfiguration.ApiBaseUrl}/api/TrainingLine/InsertTrainingLine", content);
-                response.EnsureSuccessStatusCode();
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@ExerciseID", trainingLine.ExerciseID);
+                        cmd.Parameters.AddWithValue("@TrainingID", trainingLine.TrainingID);
+                        cmd.Parameters.AddWithValue("@Sets", trainingLine.Sets);
+                        cmd.Parameters.AddWithValue("@Repetitions", trainingLine.Repetitions);
+                        cmd.Parameters.AddWithValue("@Weight", trainingLine.Weight);
+                        cmd.Parameters.AddWithValue("@Recovery", trainingLine.Recovery);
+                        cmd.Parameters.AddWithValue("@Others", trainingLine.Others);
+                        cmd.Parameters.AddWithValue("@Notes", trainingLine.Notes);
+                        cmd.Parameters.AddWithValue("@Grip", trainingLine.Grip);
 
-                string responseJson = await response.Content.ReadAsStringAsync();
-                bool result = JsonConvert.DeserializeObject<bool>(responseJson);
+                        // ExecuteScalarAsync to get the last inserted ID
+                        int lastInsertID = Convert.ToInt32(await cmd.ExecuteScalarAsync());
 
-                // devolvemos ID
-                return result;
-
+                        return lastInsertID > 0;
+                    }
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("No se pudo realizar la inserción. \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-
         }
+
         public async Task<bool> DeleteTrainingLine(int id)
         {
             try
             {
-                //HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7137/api/TrainingLine?id={id}");
-                HttpResponseMessage response = await client.DeleteAsync($"{ApiConfiguration.ApiBaseUrl}/api/TrainingLine?id={id}");
-                response.EnsureSuccessStatusCode();
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
 
-                string responseJson = await response.Content.ReadAsStringAsync();
-                bool result = JsonConvert.DeserializeObject<bool>(responseJson);
+                    string query = "DELETE FROM TrainingLines WHERE ID = @id";
 
-                return result;
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                        return rowsAffected > 0;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -86,6 +130,5 @@ namespace RutinApp.Controllers
                 return false;
             }
         }
-
     }
 }

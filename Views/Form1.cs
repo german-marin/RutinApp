@@ -24,7 +24,31 @@ namespace RutinApp
         private readonly string defaultText;
         private int idTrainingRecovered;
         private string selectedGrip;
+        // Clase para almacenar información adicional en la lista
+        public class ListItem
+        {
+            public string Text { get; set; }
+            public int ExerciseID { get; set; }
+            public int LineID { get; set; }
+            public string Image { get; set; }
+            public string MuscleGroup { get; set; }
+            public string Grip { get; set; }
 
+            public ListItem(string text, int excerciseID, int lineID, string image, string muscleGroup, string grip)
+            {
+                Text = text;
+                ExerciseID = excerciseID;
+                LineID = lineID;
+                Image = image;
+                MuscleGroup = muscleGroup;
+                Grip = grip;
+            }
+
+            public override string ToString()
+            {
+                return Text; // Esto determina qué se mostrará en el ListBox
+            }
+        }
         public Form1()
         {
             // Mostrar el SplashScreen
@@ -41,9 +65,10 @@ namespace RutinApp
             trainingLines = new List<TrainingLine>();
             exercisesToPrint = new List<ExerciseToPrint>();
             defaultText = txtNotasGenerales.Text;
-            EnsureApiAvailability();
+            //EnsureApiAvailability();
             GetAllMuscleGroupTree();
             //splashScreen.Close();
+            updateParameters();
         }
         private void cleanForm()
         {
@@ -72,29 +97,48 @@ namespace RutinApp
             ChangeMuscleGroupImage(null);
             ChangeExcerciseGrip(null);
         }
-        // Clase para almacenar información adicional en la lista
-        public class ListItem
+        private void CleanTextbox()
         {
-            public string Text { get; set; }
-            public int ExerciseID { get; set; }
-            public int LineID { get; set; }
-            public string Image { get; set; }
-            public string MuscleGroup { get; set; }
-            public string Grip { get; set; }
-
-            public ListItem(string text, int excerciseID, int lineID, string image, string muscleGroup, string grip)
+            txtSeries.Text = "";
+            txtRepes.Text = "";
+            txtPeso.Text = "";
+            txtRecuperacion.Text = "";
+            txtOtros.Text = "";
+            txtNotas.Text = "";
+            txtDescripcion.Text = "";
+            txtCliente.Text = "";
+            txtCliente.Tag = "";
+                        
+            dtpFechaInicio.Value = DateTime.Now;
+            updateParameters();
+        }
+        private void CleanExerciseTextbox()
+        {
+            txtSeries.Text = "";
+            txtRepes.Text = "";
+            txtPeso.Text = "";
+            txtRecuperacion.Text = "";
+            txtOtros.Text = "";
+            txtNotas.Text = "";
+            ChangeExcerciseGrip(null);
+        }
+        private void updateParameters()
+        {
+            if (GlobalVariables.Days != 0)
             {
-                Text = text;
-                ExerciseID = excerciseID;
-                LineID = lineID;
-                Image = image;
-                MuscleGroup = muscleGroup;
-                Grip = grip;
+                dtpFechaFin.Value = DateTime.Now.AddDays(GlobalVariables.Days);
             }
-
-            public override string ToString()
+            else
             {
-                return Text; // Esto determina qué se mostrará en el ListBox
+                dtpFechaFin.Value = DateTime.Now.AddDays(30);
+            }
+            if (GlobalVariables.Notes != "")
+            {
+                txtNotasGenerales.Text = GlobalVariables.Notes;
+            }
+            else
+            {
+                txtNotasGenerales.Text = defaultText;
             }
         }
         private async void GetAllMuscleGroupTree()
@@ -298,32 +342,7 @@ namespace RutinApp
             pbAgarre.Image = null;
             selectedGrip = "";
         }
-        private void CleanTextbox()
-        {
-            txtSeries.Text = "";
-            txtRepes.Text = "";
-            txtPeso.Text = "";
-            txtRecuperacion.Text = "";
-            txtOtros.Text = "";
-            txtNotas.Text = "";
-            txtDescripcion.Text = "";
-            txtCliente.Text = "";
-            txtCliente.Tag = "";
-            txtdias.Text = "";
-            dtpFechaFin.Value = DateTime.Now;
-            dtpFechaInicio.Value = DateTime.Now;
-            txtNotasGenerales.Text = defaultText;
-        }
-        private void CleanExerciseTextbox()
-        {
-            txtSeries.Text = "";
-            txtRepes.Text = "";
-            txtPeso.Text = "";
-            txtRecuperacion.Text = "";
-            txtOtros.Text = "";
-            txtNotas.Text = "";
-            ChangeExcerciseGrip(null);
-        }
+
         private void lstEjercicios_Click(object sender, EventArgs e)
         {
             //if (lstEjercicios.SelectedItem != null)
@@ -825,6 +844,7 @@ namespace RutinApp
             {
                 //Asignamos el valor recuperado del id del training a la variable global
                 txtCliente.Tag = popupForm.iDCustomer;
+                txtCliente.Text = popupForm.customerName.ToString();
             }
         }
 
@@ -936,5 +956,40 @@ namespace RutinApp
             frmAbout popupForm = new frmAbout();
             popupForm.ShowDialog();
         }
+
+        private void copiarRutinaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Crear una instancia del formulario secundario
+            frmSelectorRutinas popupForm = new frmSelectorRutinas();
+
+            if (txtCliente.Tag == "" || txtCliente.Tag is null)
+            {
+                popupForm.IDCustomer = 0;
+            }
+            else
+            {
+                popupForm.IDCustomer = int.Parse(txtCliente.Tag.ToString());
+            }
+            // Mostrar el formulario secundario como un cuadro de diálogo modal
+            popupForm.Text = "Seleccione rutina a copiar";
+            popupForm.btnRecuperar.Text = "Copiar Rutina";
+            popupForm.ShowDialog();
+
+            if (popupForm.IDTraining != 0)
+            {
+                cleanForm();
+                RecoverTraining(popupForm.IDTraining);
+                btnGuardar.Enabled = true;
+            }
+        }
+
+        private void parámetrosDeLaAplicaciónToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmParametros popupForm = new frmParametros();
+            popupForm.ShowDialog();
+
+            updateParameters();
+        }
+       
     }
 }

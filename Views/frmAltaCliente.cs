@@ -111,12 +111,12 @@ namespace RutinApp.Views
                     txtTelefono.Focus();
                     return;
                 }
-                if (txtEmail.Text == "")
-                {
-                    MessageBox.Show("Es necesario indicar un email", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    txtEmail.Focus();
-                    return;
-                }
+                //if (txtEmail.Text == "")
+                //{
+                //    MessageBox.Show("Es necesario indicar un email", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //    txtEmail.Focus();
+                //    return;
+                //}
 
                 if (IDCustomer != 0)
                 {

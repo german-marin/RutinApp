@@ -12,6 +12,8 @@ namespace RutinApp.Models
         public string Notes { get; set; }
         public string Days { get; set; }
 
+        public Training() { }
+
         public Training(int id, string description, DateTime startDate, DateTime endDate, int idClient, string notes, string days)
         {
             ID = id;

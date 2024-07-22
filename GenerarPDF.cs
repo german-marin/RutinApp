@@ -21,7 +21,16 @@ namespace RutinApp
     {
         public static void CrearPDF(List<ExerciseToPrint> exercisesToPrint, string pdfPath)
         {
-            string logoPath = Path.Combine(Application.StartupPath, "Resources\\rutinApp.jpg");
+           string logoPath;
+
+            if (GlobalVariables.Logo != "")
+            {
+                 logoPath = Path.Combine(Application.StartupPath, "Resources\\" + GlobalVariables.Logo + ".jpg");
+            }
+            else 
+            {
+                 logoPath = Path.Combine(Application.StartupPath, "Resources\\rutinApp.jpg");
+            }
 
             // Configurar fuente
             PdfFont font = PdfFontFactory.CreateFont(StandardFonts.HELVETICA);

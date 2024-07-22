@@ -74,6 +74,7 @@
             menuStrip1 = new MenuStrip();
             tsmArchivo = new ToolStripMenuItem();
             tsmRecuperar = new ToolStripMenuItem();
+            copiarRutinaToolStripMenuItem = new ToolStripMenuItem();
             tsmImprimir = new ToolStripMenuItem();
             editarToolStripMenuItem = new ToolStripMenuItem();
             tsmAltaCliente = new ToolStripMenuItem();
@@ -84,6 +85,7 @@
             lstEjercicios = new ListBox();
             btnAgarre = new Button();
             pbAgarre = new PictureBox();
+            parámetrosDeLaAplicaciónToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
@@ -544,6 +546,7 @@
             btnImprimir.Size = new Size(51, 48);
             btnImprimir.TabIndex = 9;
             btnImprimir.UseVisualStyleBackColor = true;
+            btnImprimir.Visible = false;
             btnImprimir.Click += btnImprimir_Click;
             // 
             // menuStrip1
@@ -557,7 +560,7 @@
             // 
             // tsmArchivo
             // 
-            tsmArchivo.DropDownItems.AddRange(new ToolStripItem[] { tsmRecuperar, tsmImprimir });
+            tsmArchivo.DropDownItems.AddRange(new ToolStripItem[] { tsmRecuperar, copiarRutinaToolStripMenuItem, tsmImprimir });
             tsmArchivo.Name = "tsmArchivo";
             tsmArchivo.Size = new Size(60, 20);
             tsmArchivo.Text = "Archivo";
@@ -569,6 +572,13 @@
             tsmRecuperar.Text = "Recuperar rutina";
             tsmRecuperar.Click += recuperarRutinaToolStripMenuItem_Click;
             // 
+            // copiarRutinaToolStripMenuItem
+            // 
+            copiarRutinaToolStripMenuItem.Name = "copiarRutinaToolStripMenuItem";
+            copiarRutinaToolStripMenuItem.Size = new Size(161, 22);
+            copiarRutinaToolStripMenuItem.Text = "Copiar rutina";
+            copiarRutinaToolStripMenuItem.Click += copiarRutinaToolStripMenuItem_Click;
+            // 
             // tsmImprimir
             // 
             tsmImprimir.Enabled = false;
@@ -579,7 +589,7 @@
             // 
             // editarToolStripMenuItem
             // 
-            editarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { tsmAltaCliente, mantenimientoDeClientesToolStripMenuItem, mantenimientoDeEjerciciosToolStripMenuItem });
+            editarToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { tsmAltaCliente, mantenimientoDeClientesToolStripMenuItem, mantenimientoDeEjerciciosToolStripMenuItem, parámetrosDeLaAplicaciónToolStripMenuItem });
             editarToolStripMenuItem.Name = "editarToolStripMenuItem";
             editarToolStripMenuItem.Size = new Size(49, 20);
             editarToolStripMenuItem.Text = "Editar";
@@ -615,7 +625,7 @@
             // sobreRutinAPPToolStripMenuItem
             // 
             sobreRutinAPPToolStripMenuItem.Name = "sobreRutinAPPToolStripMenuItem";
-            sobreRutinAPPToolStripMenuItem.Size = new Size(180, 22);
+            sobreRutinAPPToolStripMenuItem.Size = new Size(157, 22);
             sobreRutinAPPToolStripMenuItem.Text = "Sobre RutinAPP";
             sobreRutinAPPToolStripMenuItem.Click += sobreRutinAPPToolStripMenuItem_Click;
             // 
@@ -655,6 +665,13 @@
             pbAgarre.SizeMode = PictureBoxSizeMode.Zoom;
             pbAgarre.TabIndex = 11;
             pbAgarre.TabStop = false;
+            // 
+            // parámetrosDeLaAplicaciónToolStripMenuItem
+            // 
+            parámetrosDeLaAplicaciónToolStripMenuItem.Name = "parámetrosDeLaAplicaciónToolStripMenuItem";
+            parámetrosDeLaAplicaciónToolStripMenuItem.Size = new Size(224, 22);
+            parámetrosDeLaAplicaciónToolStripMenuItem.Text = "Parámetros de la aplicación";
+            parámetrosDeLaAplicaciónToolStripMenuItem.Click += parámetrosDeLaAplicaciónToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -753,5 +770,7 @@
         private ToolStripMenuItem tsmRecuperar;
         private Button btnAgarre;
         private PictureBox pbAgarre;
+        private ToolStripMenuItem copiarRutinaToolStripMenuItem;
+        private ToolStripMenuItem parámetrosDeLaAplicaciónToolStripMenuItem;
     }
 }
