@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RutinApp", "RutinApp.csproj", "{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RutinAppSetup", "..\RutinAppSetup\RutinAppSetup.vdproj", "{F10AC49F-6E88-4309-A3C3-3F2204DC6CAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,8 +15,10 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF0DB7BA-98B2-451E-BDDC-86C153BB2556}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{F10AC49F-6E88-4309-A3C3-3F2204DC6CAB}.Debug|Any CPU.ActiveCfg = Debug
+		{F10AC49F-6E88-4309-A3C3-3F2204DC6CAB}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

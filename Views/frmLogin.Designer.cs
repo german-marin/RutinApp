@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLogin));
             btnAccept = new Button();
             btnCancel = new Button();
             pictureBox1 = new PictureBox();
@@ -133,6 +134,7 @@
             Controls.Add(btnCancel);
             Controls.Add(btnAccept);
             FormBorderStyle = FormBorderStyle.None;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "frmLogin";

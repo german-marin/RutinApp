@@ -1,10 +1,10 @@
-﻿using RutinApp;
-using RutinApp.Views;
+﻿using RutinApp.Views;
 using System;
 using System.IO;
 using System.Management;
 using System.Security.Cryptography;
 using System.Text;
+using System.Windows.Forms;
 
 namespace RutinApp.Licensing
 {
@@ -14,61 +14,74 @@ namespace RutinApp.Licensing
 
         public static bool ValidateLicense()
         {
-            if (!File.Exists(GetLicenseFilePath()))
+            try
             {
-                ShowActivationForm();
+                if (!File.Exists(GetLicenseFilePath()))
+                {
+                    ShowActivationForm();
+                    return false;
+                }
+
+                // Leer licencia encriptada desde el archivo
+                string encryptedLicense = File.ReadAllText(GetLicenseFilePath());
+
+                // Desencriptar la licencia
+                string decryptedLicense = DecryptString(encryptedLicense, EncryptionKey);
+
+                string[] licenseParts = decryptedLicense.Split(';');
+
+                if (licenseParts.Length != 2)
+                {
+                    Logger.Log("License data format is incorrect.");
+                    MessageBox.Show("Datos de licencia incorrectos. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowActivationForm();
+                    return false;
+                }
+
+                string installationKey = licenseParts[0];
+                string currentInstallationKey = GetUniqueIdentifier();
+
+                if (installationKey != currentInstallationKey)
+                {
+                    Logger.Log($"License mismatch. Expected: {installationKey}, Found: {currentInstallationKey}");
+                    MessageBox.Show("La licencia no corresponde a esta instalación. Por favor, contacte con el proveedor.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowActivationForm();
+                    return false;
+                }
+
+                DateTime expirationDate;
+
+                if (!DateTime.TryParse(licenseParts[1], out expirationDate))
+                {
+                    Logger.Log("Invalid license expiration date format.");
+                    MessageBox.Show("Fecha de expiración de licencia inválida. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowActivationForm();
+                    return false;
+                }
+
+                if (expirationDate.Date < DateTime.Now.Date)
+                {
+                    Logger.Log($"License expired. Expiration date: {expirationDate}");
+                    MessageBox.Show("La licencia ha expirado. Por favor, contacte con el proveedor para renovarla.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowActivationForm();
+                    return false;
+                }
+
+                // Comprobar si quedan menos de 7 días para la expiración
+                TimeSpan remainingTime = expirationDate.Date - DateTime.Now.Date;
+                if (remainingTime.Days <= 7)
+                {
+                    MessageBox.Show($"La licencia expira en {remainingTime.Days} días. Por favor, contacte con el proveedor para renovarla.", "Advertencia de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+                // Validación exitosa
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
                 return false;
             }
-
-            // Leer licencia encriptada desde el archivo
-            string encryptedLicense = File.ReadAllText(GetLicenseFilePath());
-
-            // Desencriptar la licencia
-            string decryptedLicense = DecryptString(encryptedLicense, EncryptionKey);
-
-            string[] licenseParts = decryptedLicense.Split(';');
-
-            if (licenseParts.Length != 2)
-            {
-                MessageBox.Show("Datos de licencia incorrectos. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ShowActivationForm();
-                return false;
-            }
-
-            string installationKey = licenseParts[0];
-            string currentInstallationKey = GetHardDriveSerialNumber();
-
-            if (installationKey != currentInstallationKey)
-            {
-                MessageBox.Show("La licencia no corresponde a esta instalación. Por favor, contacte con el proveedor.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ShowActivationForm();
-                return false;
-            }
-
-            DateTime expirationDate;
-
-            if (!DateTime.TryParse(licenseParts[1], out expirationDate))
-            {
-                MessageBox.Show("Fecha de expiración de licencia inválida. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ShowActivationForm();
-                return false;
-            }
-
-            if (expirationDate.Date < DateTime.Now.Date)
-            {
-                MessageBox.Show("La licencia ha expirado. Por favor, contacte con el proveedor para renovarla.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ShowActivationForm();
-                return false;
-            }
-            // Comprobar si quedan menos de 7 días para la expiración
-            TimeSpan remainingTime = expirationDate.Date - DateTime.Now.Date;
-            if (remainingTime.Days <= 7)
-            {
-                MessageBox.Show($"La licencia expira en {remainingTime.Days} días. Por favor, contacte con el proveedor para renovarla.", "Advertencia de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-
-            // Validación exitosa
-            return true;
         }
 
         private static void ShowActivationForm()
@@ -95,8 +108,25 @@ namespace RutinApp.Licensing
             // Encriptar los datos de la licencia
             string encryptedLicense = EncryptString(licenseData, EncryptionKey);
 
-            // Guardar en archivo
-            File.WriteAllText(GetLicenseFilePath(), encryptedLicense);
+            try
+            {
+                string licenseFilePath = GetLicenseFilePath();
+
+                // Asegurarse de que el directorio exista
+                string licenseDirectory = Path.GetDirectoryName(licenseFilePath);
+                if (!Directory.Exists(licenseDirectory))
+                {
+                    Directory.CreateDirectory(licenseDirectory);
+                }
+
+                File.WriteAllText(licenseFilePath, encryptedLicense);
+            }
+            catch (Exception ex)
+            {
+                // Manejo de excepciones si la escritura del archivo falla
+                Logger.LogException(ex);
+                MessageBox.Show($"Failed to save license file: {ex.Message}");
+            }
         }
 
         private static string GetLicenseFilePath()
@@ -135,38 +165,161 @@ namespace RutinApp.Licensing
 
         public static string DecryptString(string cipherText, string key)
         {
-            byte[] iv = new byte[16]; // Vector de inicialización (debería ser aleatorio y no está en este ejemplo)
-            byte[] buffer = Convert.FromBase64String(cipherText);
-
-            using (Aes aes = Aes.Create())
+            try
             {
-                aes.Key = Encoding.UTF8.GetBytes(key);
-                aes.IV = iv;
+                byte[] iv = new byte[16]; // Vector de inicialización (debería ser aleatorio y no está en este ejemplo)
+                byte[] buffer = Convert.FromBase64String(cipherText);
 
-                ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-
-                using (MemoryStream memoryStream = new MemoryStream(buffer))
+                using (Aes aes = Aes.Create())
                 {
-                    using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
+                    aes.Key = Encoding.UTF8.GetBytes(key);
+                    aes.IV = iv;
+
+                    ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+                    using (MemoryStream memoryStream = new MemoryStream(buffer))
                     {
-                        using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                        using (CryptoStream cryptoStream = new CryptoStream((Stream)memoryStream, decryptor, CryptoStreamMode.Read))
                         {
-                            return streamReader.ReadToEnd();
+                            using (StreamReader streamReader = new StreamReader((Stream)cryptoStream))
+                            {
+                                return streamReader.ReadToEnd();
+                            }
                         }
                     }
                 }
             }
-        }
-        public static string GetHardDriveSerialNumber()
-        {
-            string serialNumber = "";
-            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive");
-            foreach (ManagementObject wmi_HD in searcher.Get())
+            catch (Exception ex) 
             {
-                serialNumber = wmi_HD["SerialNumber"].ToString();
-                break;
+                Logger.LogException(ex);
+                MessageBox.Show("Error de licencia: " + ex.Message, "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return null;
             }
-            return serialNumber;
+        }
+
+        public static string GetUniqueIdentifier()
+        {
+            string identifier = GetHardDriveSerialNumber();
+            Logger.Log("disco:" + identifier);
+            identifier = GetCpuId();
+            Logger.Log("cpu:" + identifier);
+            identifier = GetBiosUUID();
+            Logger.Log("bios:" + identifier); 
+            identifier = GetMacAddress();
+            Logger.Log("mac:" + identifier);
+
+            identifier = GetHardDriveSerialNumber();
+
+            if (string.IsNullOrEmpty(identifier))
+            {
+                Logger.Log("No hard drive serial number found. Attempting to get CPU ID.");
+                identifier = GetCpuId();
+            }
+            if (string.IsNullOrEmpty(identifier))
+            {
+                Logger.Log("No CPU ID found. Attempting to get BIOS UUID.");
+                identifier = GetBiosUUID();
+            }
+
+            if (string.IsNullOrEmpty(identifier))
+            {
+                Logger.Log("No BIOS UUID found. Attempting to get Network Adapter MAC.");
+                identifier = GetMacAddress();
+            }
+
+            if (string.IsNullOrEmpty(identifier))
+            {
+                Logger.Log("No MAC address found. Unable to obtain a persistent unique identifier.");
+                
+            }
+
+            return identifier;
+        }
+
+        private static string GetHardDriveSerialNumber()
+        {
+            try
+            {
+                string serialNumber = "";
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_DiskDrive");
+                foreach (ManagementObject wmi_HD in searcher.Get())
+                {
+                    serialNumber = wmi_HD["SerialNumber"]?.ToString().Trim();
+                    if (!string.IsNullOrEmpty(serialNumber))
+                    {
+                        return serialNumber;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+            return null;
+        }
+
+        private static string GetBiosUUID()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_BIOS");
+                foreach (ManagementObject wmi_BIOS in searcher.Get())
+                {
+                    string uuid = wmi_BIOS["SerialNumber"]?.ToString().Trim();
+                    if (!string.IsNullOrEmpty(uuid))
+                    {
+                        return uuid;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+            return null;
+        }
+
+        private static string GetMacAddress()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_NetworkAdapterConfiguration WHERE IPEnabled = TRUE");
+                foreach (ManagementObject wmi_Network in searcher.Get())
+                {
+                    string macAddress = wmi_Network["MACAddress"]?.ToString().Trim();
+                    if (!string.IsNullOrEmpty(macAddress))
+                    {
+                        return macAddress;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+            return null;
+        }
+
+        private static string GetCpuId()
+        {
+            try
+            {
+                ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_Processor");
+                foreach (ManagementObject wmi_CPU in searcher.Get())
+                {
+                    string cpuId = wmi_CPU["ProcessorId"]?.ToString().Trim();
+                    if (!string.IsNullOrEmpty(cpuId))
+                    {
+                        return cpuId;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+            return null;
         }
     }
 }

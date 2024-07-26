@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMantenimientoEjercicios));
             cmbGruposMusculares = new ComboBox();
             label1 = new Label();
             cmbCategoria = new ComboBox();
@@ -227,6 +228,7 @@
             Controls.Add(cmbCategoria);
             Controls.Add(cmbGruposMusculares);
             Controls.Add(lstEjercicios);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "frmMantenimientoEjercicios";
             ShowIcon = false;

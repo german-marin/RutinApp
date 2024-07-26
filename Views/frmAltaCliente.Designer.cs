@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAltaCliente));
             label1 = new Label();
             txtNombre = new TextBox();
             label2 = new Label();
@@ -271,6 +272,7 @@
             Controls.Add(txtApellido2);
             Controls.Add(txtApellido1);
             Controls.Add(txtNombre);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "frmAltaCliente";
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;

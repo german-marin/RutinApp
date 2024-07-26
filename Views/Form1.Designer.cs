@@ -80,12 +80,12 @@
             tsmAltaCliente = new ToolStripMenuItem();
             mantenimientoDeClientesToolStripMenuItem = new ToolStripMenuItem();
             mantenimientoDeEjerciciosToolStripMenuItem = new ToolStripMenuItem();
+            parámetrosDeLaAplicaciónToolStripMenuItem = new ToolStripMenuItem();
             ayudaToolStripMenuItem = new ToolStripMenuItem();
             sobreRutinAPPToolStripMenuItem = new ToolStripMenuItem();
             lstEjercicios = new ListBox();
             btnAgarre = new Button();
             pbAgarre = new PictureBox();
-            parámetrosDeLaAplicaciónToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
@@ -615,6 +615,13 @@
             mantenimientoDeEjerciciosToolStripMenuItem.Text = "Mantenimiento de ejercicios";
             mantenimientoDeEjerciciosToolStripMenuItem.Click += mantenimientoDeEjerciciosToolStripMenuItem_Click;
             // 
+            // parámetrosDeLaAplicaciónToolStripMenuItem
+            // 
+            parámetrosDeLaAplicaciónToolStripMenuItem.Name = "parámetrosDeLaAplicaciónToolStripMenuItem";
+            parámetrosDeLaAplicaciónToolStripMenuItem.Size = new Size(224, 22);
+            parámetrosDeLaAplicaciónToolStripMenuItem.Text = "Parámetros de la aplicación";
+            parámetrosDeLaAplicaciónToolStripMenuItem.Click += parámetrosDeLaAplicaciónToolStripMenuItem_Click;
+            // 
             // ayudaToolStripMenuItem
             // 
             ayudaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sobreRutinAPPToolStripMenuItem });
@@ -665,13 +672,6 @@
             pbAgarre.SizeMode = PictureBoxSizeMode.Zoom;
             pbAgarre.TabIndex = 11;
             pbAgarre.TabStop = false;
-            // 
-            // parámetrosDeLaAplicaciónToolStripMenuItem
-            // 
-            parámetrosDeLaAplicaciónToolStripMenuItem.Name = "parámetrosDeLaAplicaciónToolStripMenuItem";
-            parámetrosDeLaAplicaciónToolStripMenuItem.Size = new Size(224, 22);
-            parámetrosDeLaAplicaciónToolStripMenuItem.Text = "Parámetros de la aplicación";
-            parámetrosDeLaAplicaciónToolStripMenuItem.Click += parámetrosDeLaAplicaciónToolStripMenuItem_Click;
             // 
             // Form1
             // 

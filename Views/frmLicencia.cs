@@ -49,7 +49,7 @@ namespace RutinApp.Views
         }
         private string GetUniqueInstallationKey()
         {
-            return LicenseManager.GetHardDriveSerialNumber();
+            return LicenseManager.GetUniqueIdentifier();
         }
 
 
