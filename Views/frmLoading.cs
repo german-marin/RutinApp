@@ -1,12 +1,17 @@
 ﻿
+using Microsoft.VisualBasic.Logging;
+
 namespace RutinApp.Views
 {
     public partial class frmLoading : Form
     {
+        public bool login { get; set; } = true;
+
         private System.Windows.Forms.Timer timer;
         public frmLoading()
         {
             InitializeComponent();
+
             // Crear una instancia del formulario secundario
             frmLogin popupForm = new frmLogin();
 
@@ -20,20 +25,20 @@ namespace RutinApp.Views
             //timer.Tick += (sender, args) => popupForm.ShowDialog();           
             timer.Start();
 
-
         }
         private void TimerTick(object sender, EventArgs e)
         {
             timer.Stop();
-            loadLogin();
+            if (login)
+            {
+                loadLogin();
+            }
         }
         private void loadLogin()
         {
             frmLogin popupForm = new frmLogin();
             popupForm.ShowDialog();
             Close();
-
         }
-    
     }
 }

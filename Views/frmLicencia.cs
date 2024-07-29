@@ -18,6 +18,7 @@ namespace RutinApp.Views
         public frmLicencia()
         {
             InitializeComponent();
+            this.TopMost = true; // Asegurar que el formulario esté en la parte superior
             txtInstallationKey.Text = GetUniqueInstallationKey();
         }
 

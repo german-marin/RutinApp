@@ -18,6 +18,7 @@ namespace RutinApp.Licensing
             {
                 if (!File.Exists(GetLicenseFilePath()))
                 {
+                    Program.CloseSplashScreen();  // Close splash screen before showing the activation form
                     ShowActivationForm();
                     return false;
                 }
@@ -33,7 +34,8 @@ namespace RutinApp.Licensing
                 if (licenseParts.Length != 2)
                 {
                     Logger.Log("License data format is incorrect.");
-                    MessageBox.Show("Datos de licencia incorrectos. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.CloseSplashScreen();  // Close splash screen before showing the message
+                    ShowTopMostMessageBox("Datos de licencia incorrectos. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxIcon.Information);
                     ShowActivationForm();
                     return false;
                 }
@@ -44,7 +46,8 @@ namespace RutinApp.Licensing
                 if (installationKey != currentInstallationKey)
                 {
                     Logger.Log($"License mismatch. Expected: {installationKey}, Found: {currentInstallationKey}");
-                    MessageBox.Show("La licencia no corresponde a esta instalación. Por favor, contacte con el proveedor.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.CloseSplashScreen();  // Close splash screen before showing the message
+                    ShowTopMostMessageBox("La licencia no corresponde a esta instalación. Por favor, contacte con el proveedor.", "Activación de Licencia", MessageBoxIcon.Information);
                     ShowActivationForm();
                     return false;
                 }
@@ -54,7 +57,8 @@ namespace RutinApp.Licensing
                 if (!DateTime.TryParse(licenseParts[1], out expirationDate))
                 {
                     Logger.Log("Invalid license expiration date format.");
-                    MessageBox.Show("Fecha de expiración de licencia inválida. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.CloseSplashScreen();  // Close splash screen before showing the message
+                    ShowTopMostMessageBox("Fecha de expiración de licencia inválida. Por favor, introduzca la clave de instalación.", "Activación de Licencia", MessageBoxIcon.Information);
                     ShowActivationForm();
                     return false;
                 }
@@ -62,7 +66,8 @@ namespace RutinApp.Licensing
                 if (expirationDate.Date < DateTime.Now.Date)
                 {
                     Logger.Log($"License expired. Expiration date: {expirationDate}");
-                    MessageBox.Show("La licencia ha expirado. Por favor, contacte con el proveedor para renovarla.", "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.CloseSplashScreen();  // Close splash screen before showing the message
+                    ShowTopMostMessageBox("La licencia ha expirado. Por favor, contacte con el proveedor para renovarla.", "Activación de Licencia", MessageBoxIcon.Information);
                     ShowActivationForm();
                     return false;
                 }
@@ -71,7 +76,8 @@ namespace RutinApp.Licensing
                 TimeSpan remainingTime = expirationDate.Date - DateTime.Now.Date;
                 if (remainingTime.Days <= 7)
                 {
-                    MessageBox.Show($"La licencia expira en {remainingTime.Days} días. Por favor, contacte con el proveedor para renovarla.", "Advertencia de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Program.CloseSplashScreen();  // Close splash screen before showing the message
+                    ShowTopMostMessageBox($"La licencia expira en {remainingTime.Days} días. Por favor, contacte con el proveedor para renovarla.", "Advertencia de Licencia", MessageBoxIcon.Warning);
                 }
 
                 // Validación exitosa
@@ -80,6 +86,7 @@ namespace RutinApp.Licensing
             catch (Exception ex)
             {
                 Logger.LogException(ex);
+                Program.CloseSplashScreen();  // Close splash screen before showing the message
                 return false;
             }
         }
@@ -89,6 +96,7 @@ namespace RutinApp.Licensing
             // Mostrar formulario para activar la licencia
             using (frmLicencia activationForm = new frmLicencia())
             {
+                activationForm.TopMost = true; // Asegurar que el formulario esté en la parte superior
                 if (activationForm.ShowDialog() == DialogResult.OK)
                 {
                     // Guardar la licencia generada por el usuario
@@ -125,7 +133,7 @@ namespace RutinApp.Licensing
             {
                 // Manejo de excepciones si la escritura del archivo falla
                 Logger.LogException(ex);
-                MessageBox.Show($"Failed to save license file: {ex.Message}");
+                ShowTopMostMessageBox($"Failed to save license file: {ex.Message}", "Error", MessageBoxIcon.Error);
             }
         }
 
@@ -189,10 +197,10 @@ namespace RutinApp.Licensing
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Logger.LogException(ex);
-                MessageBox.Show("Error de licencia: " + ex.Message, "Activación de Licencia", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowTopMostMessageBox("Error de licencia: " + ex.Message, "Activación de Licencia", MessageBoxIcon.Error);
 
                 return null;
             }
@@ -205,7 +213,7 @@ namespace RutinApp.Licensing
             identifier = GetCpuId();
             Logger.Log("cpu:" + identifier);
             identifier = GetBiosUUID();
-            Logger.Log("bios:" + identifier); 
+            Logger.Log("bios:" + identifier);
             identifier = GetMacAddress();
             Logger.Log("mac:" + identifier);
 
@@ -231,7 +239,7 @@ namespace RutinApp.Licensing
             if (string.IsNullOrEmpty(identifier))
             {
                 Logger.Log("No MAC address found. Unable to obtain a persistent unique identifier.");
-                
+
             }
 
             return identifier;
@@ -320,6 +328,22 @@ namespace RutinApp.Licensing
                 Logger.LogException(ex);
             }
             return null;
+        }
+
+        private static void ShowTopMostMessageBox(string text, string caption, MessageBoxIcon icon)
+        {
+            Form topMostForm = new Form();
+            topMostForm.TopMost = true;
+            topMostForm.StartPosition = FormStartPosition.CenterScreen;
+            topMostForm.Size = new System.Drawing.Size(1, 1); // Formulario muy pequeño solo para mostrar el mensaje
+            topMostForm.MaximizeBox = false;
+            topMostForm.MinimizeBox = false;
+            topMostForm.HelpButton = false;
+            topMostForm.ControlBox = false;
+            topMostForm.ShowInTaskbar = false;
+            topMostForm.Show();
+            MessageBox.Show(topMostForm, text, caption, MessageBoxButtons.OK, icon);
+            topMostForm.Close();
         }
     }
 }

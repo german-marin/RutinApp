@@ -118,6 +118,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Zoom;
             ClientSize = new Size(322, 280);
+            ControlBox = false;
             Controls.Add(label6);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -132,9 +133,9 @@
             MdiChildrenMinimizedAnchorBottom = false;
             MinimizeBox = false;
             Name = "frmLicencia";
-            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Licencia del producto";
+            TopMost = true;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
