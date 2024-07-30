@@ -43,6 +43,7 @@ namespace RutinApp.Controllers
                                     GlobalVariables.Notes = reader["Notes"].ToString();
                                     GlobalVariables.Days = reader["Days"] != DBNull.Value ? int.Parse(reader["Days"].ToString()) : 0;
                                     GlobalVariables.Id = int.Parse(reader["Id"].ToString());
+                                    GlobalVariables.UserName = user.Username;
                                     return new AuthenticationResult
                                     {
                                         IsSuccess = true
@@ -106,7 +107,81 @@ namespace RutinApp.Controllers
                 return false;
             }
         }
+        public async Task<bool> ChangePassword(string username, string currentPassword, string newPassword, string confirmPassword)
+        {
+            try
+            {
+                using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+
+                    // Obtén el usuario por el nombre de usuario
+                    string query = "SELECT * FROM users WHERE Username = @username";
+                    using (SQLiteCommand cmd = new SQLiteCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@username", username);
+
+                        using (var reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                string storedPasswordHash = reader["Password"].ToString();
+
+                                // Verifica si la contraseña actual es correcta
+                                if (!BCrypt.Net.BCrypt.Verify(currentPassword, storedPasswordHash))
+                                {
+                                    MessageBox.Show("La contraseña actual es incorrecta.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return false;
+                                }
+
+                                // Verifica si las nuevas contraseñas coinciden
+                                if (newPassword != confirmPassword)
+                                {
+                                    MessageBox.Show("Las nuevas contraseñas no coinciden.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return false;
+                                }
+
+                                // Hashea la nueva contraseña
+                                string newHashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+                                // Actualiza la contraseña en la base de datos
+                                query = "UPDATE users SET Password = @newPassword WHERE Username = @username";
+                                using (SQLiteCommand updateCmd = new SQLiteCommand(query, conn))
+                                {
+                                    updateCmd.Parameters.AddWithValue("@newPassword", newHashedPassword);
+                                    updateCmd.Parameters.AddWithValue("@username", username);
+
+                                    int rowsAffected = await updateCmd.ExecuteNonQueryAsync();
+
+                                    if (rowsAffected > 0)
+                                    {
+                                        MessageBox.Show("La contraseña ha sido cambiada exitosamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        return true;
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("No se pudo cambiar la contraseña. Inténtelo de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                        return false;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show("El usuario no existe. Por favor, inténtelo de nuevo.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ocurrió un error al cambiar la contraseña: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+        }
     }
+
 
     public class AuthenticationResult
     {

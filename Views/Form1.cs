@@ -108,7 +108,7 @@ namespace RutinApp
             txtDescripcion.Text = "";
             txtCliente.Text = "";
             txtCliente.Tag = "";
-                        
+
             dtpFechaInicio.Value = DateTime.Now;
             updateParameters();
         }
@@ -990,6 +990,11 @@ namespace RutinApp
 
             updateParameters();
         }
-       
+
+        private void cambiarContraseñaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            frmChangePassword popupForm = new frmChangePassword();
+            popupForm.ShowDialog();
+        }
     }
 }

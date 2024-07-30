@@ -86,6 +86,7 @@
             lstEjercicios = new ListBox();
             btnAgarre = new Button();
             pbAgarre = new PictureBox();
+            cambiarContraseñaToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
@@ -568,14 +569,14 @@
             // tsmRecuperar
             // 
             tsmRecuperar.Name = "tsmRecuperar";
-            tsmRecuperar.Size = new Size(161, 22);
+            tsmRecuperar.Size = new Size(180, 22);
             tsmRecuperar.Text = "Recuperar rutina";
             tsmRecuperar.Click += recuperarRutinaToolStripMenuItem_Click;
             // 
             // copiarRutinaToolStripMenuItem
             // 
             copiarRutinaToolStripMenuItem.Name = "copiarRutinaToolStripMenuItem";
-            copiarRutinaToolStripMenuItem.Size = new Size(161, 22);
+            copiarRutinaToolStripMenuItem.Size = new Size(180, 22);
             copiarRutinaToolStripMenuItem.Text = "Copiar rutina";
             copiarRutinaToolStripMenuItem.Click += copiarRutinaToolStripMenuItem_Click;
             // 
@@ -583,7 +584,7 @@
             // 
             tsmImprimir.Enabled = false;
             tsmImprimir.Name = "tsmImprimir";
-            tsmImprimir.Size = new Size(161, 22);
+            tsmImprimir.Size = new Size(180, 22);
             tsmImprimir.Text = "Imprimir rutina";
             tsmImprimir.Click += imprimirRutinaToolStripMenuItem_Click;
             // 
@@ -624,7 +625,7 @@
             // 
             // ayudaToolStripMenuItem
             // 
-            ayudaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sobreRutinAPPToolStripMenuItem });
+            ayudaToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { sobreRutinAPPToolStripMenuItem, cambiarContraseñaToolStripMenuItem });
             ayudaToolStripMenuItem.Name = "ayudaToolStripMenuItem";
             ayudaToolStripMenuItem.Size = new Size(53, 20);
             ayudaToolStripMenuItem.Text = "Ayuda";
@@ -632,7 +633,7 @@
             // sobreRutinAPPToolStripMenuItem
             // 
             sobreRutinAPPToolStripMenuItem.Name = "sobreRutinAPPToolStripMenuItem";
-            sobreRutinAPPToolStripMenuItem.Size = new Size(157, 22);
+            sobreRutinAPPToolStripMenuItem.Size = new Size(180, 22);
             sobreRutinAPPToolStripMenuItem.Text = "Sobre RutinAPP";
             sobreRutinAPPToolStripMenuItem.Click += sobreRutinAPPToolStripMenuItem_Click;
             // 
@@ -672,6 +673,13 @@
             pbAgarre.SizeMode = PictureBoxSizeMode.Zoom;
             pbAgarre.TabIndex = 11;
             pbAgarre.TabStop = false;
+            // 
+            // cambiarContraseñaToolStripMenuItem
+            // 
+            cambiarContraseñaToolStripMenuItem.Name = "cambiarContraseñaToolStripMenuItem";
+            cambiarContraseñaToolStripMenuItem.Size = new Size(180, 22);
+            cambiarContraseñaToolStripMenuItem.Text = "Cambiar contraseña";
+            cambiarContraseñaToolStripMenuItem.Click += cambiarContraseñaToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -772,5 +780,6 @@
         private PictureBox pbAgarre;
         private ToolStripMenuItem copiarRutinaToolStripMenuItem;
         private ToolStripMenuItem parámetrosDeLaAplicaciónToolStripMenuItem;
+        private ToolStripMenuItem cambiarContraseñaToolStripMenuItem;
     }
 }

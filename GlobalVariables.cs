@@ -12,5 +12,6 @@ namespace RutinApp
         public static string Notes { get; set; }
         public static int Days { get; set; }
         public static int Id { get; set; }
+        public static string UserName { get; set; }
     }
 }
