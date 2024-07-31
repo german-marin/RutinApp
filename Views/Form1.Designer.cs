@@ -83,10 +83,12 @@
             parámetrosDeLaAplicaciónToolStripMenuItem = new ToolStripMenuItem();
             ayudaToolStripMenuItem = new ToolStripMenuItem();
             sobreRutinAPPToolStripMenuItem = new ToolStripMenuItem();
+            cambiarContraseñaToolStripMenuItem = new ToolStripMenuItem();
             lstEjercicios = new ListBox();
             btnAgarre = new Button();
             pbAgarre = new PictureBox();
-            cambiarContraseñaToolStripMenuItem = new ToolStripMenuItem();
+            cmsEjercicios = new ContextMenuStrip(components);
+            modificarToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pbFront).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pbBack).BeginInit();
             panel1.SuspendLayout();
@@ -97,6 +99,7 @@
             ((System.ComponentModel.ISupportInitialize)bsTraining).BeginInit();
             menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pbAgarre).BeginInit();
+            cmsEjercicios.SuspendLayout();
             SuspendLayout();
             // 
             // trvGruposMusculares
@@ -569,14 +572,14 @@
             // tsmRecuperar
             // 
             tsmRecuperar.Name = "tsmRecuperar";
-            tsmRecuperar.Size = new Size(180, 22);
+            tsmRecuperar.Size = new Size(161, 22);
             tsmRecuperar.Text = "Recuperar rutina";
             tsmRecuperar.Click += recuperarRutinaToolStripMenuItem_Click;
             // 
             // copiarRutinaToolStripMenuItem
             // 
             copiarRutinaToolStripMenuItem.Name = "copiarRutinaToolStripMenuItem";
-            copiarRutinaToolStripMenuItem.Size = new Size(180, 22);
+            copiarRutinaToolStripMenuItem.Size = new Size(161, 22);
             copiarRutinaToolStripMenuItem.Text = "Copiar rutina";
             copiarRutinaToolStripMenuItem.Click += copiarRutinaToolStripMenuItem_Click;
             // 
@@ -584,7 +587,7 @@
             // 
             tsmImprimir.Enabled = false;
             tsmImprimir.Name = "tsmImprimir";
-            tsmImprimir.Size = new Size(180, 22);
+            tsmImprimir.Size = new Size(161, 22);
             tsmImprimir.Text = "Imprimir rutina";
             tsmImprimir.Click += imprimirRutinaToolStripMenuItem_Click;
             // 
@@ -637,6 +640,13 @@
             sobreRutinAPPToolStripMenuItem.Text = "Sobre RutinAPP";
             sobreRutinAPPToolStripMenuItem.Click += sobreRutinAPPToolStripMenuItem_Click;
             // 
+            // cambiarContraseñaToolStripMenuItem
+            // 
+            cambiarContraseñaToolStripMenuItem.Name = "cambiarContraseñaToolStripMenuItem";
+            cambiarContraseñaToolStripMenuItem.Size = new Size(180, 22);
+            cambiarContraseñaToolStripMenuItem.Text = "Cambiar contraseña";
+            cambiarContraseñaToolStripMenuItem.Click += cambiarContraseñaToolStripMenuItem_Click;
+            // 
             // lstEjercicios
             // 
             lstEjercicios.AllowDrop = true;
@@ -674,12 +684,19 @@
             pbAgarre.TabIndex = 11;
             pbAgarre.TabStop = false;
             // 
-            // cambiarContraseñaToolStripMenuItem
+            // cmsEjercicios
             // 
-            cambiarContraseñaToolStripMenuItem.Name = "cambiarContraseñaToolStripMenuItem";
-            cambiarContraseñaToolStripMenuItem.Size = new Size(180, 22);
-            cambiarContraseñaToolStripMenuItem.Text = "Cambiar contraseña";
-            cambiarContraseñaToolStripMenuItem.Click += cambiarContraseñaToolStripMenuItem_Click;
+            cmsEjercicios.Items.AddRange(new ToolStripItem[] { modificarToolStripMenuItem });
+            cmsEjercicios.Name = "csmEjercicios";
+            cmsEjercicios.Size = new Size(126, 26);
+            // 
+            // modificarToolStripMenuItem
+            // 
+            modificarToolStripMenuItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            modificarToolStripMenuItem.Name = "modificarToolStripMenuItem";
+            modificarToolStripMenuItem.Size = new Size(125, 22);
+            modificarToolStripMenuItem.Text = "Modificar";
+            modificarToolStripMenuItem.Click += modificarToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -719,6 +736,7 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pbAgarre).EndInit();
+            cmsEjercicios.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -781,5 +799,7 @@
         private ToolStripMenuItem copiarRutinaToolStripMenuItem;
         private ToolStripMenuItem parámetrosDeLaAplicaciónToolStripMenuItem;
         private ToolStripMenuItem cambiarContraseñaToolStripMenuItem;
+        private ContextMenuStrip cmsEjercicios;
+        private ToolStripMenuItem modificarToolStripMenuItem;
     }
 }

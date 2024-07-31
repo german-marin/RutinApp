@@ -24,6 +24,7 @@ namespace RutinApp
         private readonly string defaultText;
         private int idTrainingRecovered;
         private string selectedGrip;
+        private bool editing = false;
         // Clase para almacenar información adicional en la lista
         public class ListItem
         {
@@ -326,17 +327,35 @@ namespace RutinApp
             btnLimpiar.Enabled = true;
             btnImprimir.Enabled = true;
             tsmImprimir.Enabled = true;
-            TrainingLine line = new TrainingLine(0, exerciseIdListValue, 0,
-                                                    txtSeries.Text.Trim(),
-                                                    txtRepes.Text.Trim(),
-                                                    txtPeso.Text.Trim(),
-                                                    txtRecuperacion.Text.Trim(),
-                                                    txtOtros.Text.Trim(),
-                                                    txtNotas.Text.Trim(),
-                                                    selectedGrip);
-            trainingLines.Add(line);
+            if (editing)
+            {
+                int index = lstEjercicios.SelectedIndex;
+                TrainingLine line = new TrainingLine(((ListItem)lstEjercicios.SelectedItem).LineID,
+                                                     exerciseIdListValue,
+                                                     trainingLines[index].TrainingID,
+                                                     txtSeries.Text.Trim(),
+                                                     txtRepes.Text.Trim(),
+                                                     txtPeso.Text.Trim(),
+                                                     txtRecuperacion.Text.Trim(),
+                                                     txtOtros.Text.Trim(),
+                                                     txtNotas.Text.Trim(),
+                                                     selectedGrip);
+                trainingLines[index] = line;
+                editing = false;
+            }
+            else
+            {
+                TrainingLine line = new TrainingLine(0, exerciseIdListValue, 0,
+                                                        txtSeries.Text.Trim(),
+                                                        txtRepes.Text.Trim(),
+                                                        txtPeso.Text.Trim(),
+                                                        txtRecuperacion.Text.Trim(),
+                                                        txtOtros.Text.Trim(),
+                                                        txtNotas.Text.Trim(),
+                                                        selectedGrip);
+                trainingLines.Add(line);
+            }
             lstEjercicios.SelectedItem = null;
-            btnGuardar.Enabled = true;
             CleanExerciseTextbox();
             pbExercise.Image = Image.FromFile(Path.Combine(Application.StartupPath, "Resources", "rutinApp.jpg"));
             pbAgarre.Image = null;
@@ -367,6 +386,15 @@ namespace RutinApp
             btnBorrar.Enabled = true;
             // Iniciar el arrastre y soltar con el ítem seleccionado
             this.lstEjercicios.DoDragDrop(this.lstEjercicios.SelectedItem, DragDropEffects.Move);
+            if (e.Button == MouseButtons.Right)
+            {
+                index = lstEjercicios.IndexFromPoint(e.Location);
+                if (index != ListBox.NoMatches)
+                {
+                    lstEjercicios.SelectedIndex = index;
+                    cmsEjercicios.Show(Cursor.Position);
+                }
+            }
         }
         private void fillTextBox(TrainingLine line)
         {
@@ -995,6 +1023,22 @@ namespace RutinApp
         {
             frmChangePassword popupForm = new frmChangePassword();
             popupForm.ShowDialog();
+        }
+
+        private void modificarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            enableTextbox();
+            lstEjercicios.Enabled = false;
+            btnGuardar.Enabled = false;
+            tsmRecuperar.Enabled = false;
+            trvGruposMusculares.Enabled = false;
+            btnAñadir.Enabled = true;
+            btnAgarre.Enabled = true;
+            btnBorrar.Enabled = true;
+            btnLimpiar.Enabled = false;
+            btnImprimir.Enabled = false;
+            tsmImprimir.Enabled = false;
+            editing = true;
         }
     }
 }
