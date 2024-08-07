@@ -31,16 +31,17 @@
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSelectorClientes));
             dgvClientes = new DataGridView();
-            Column3 = new DataGridViewTextBoxColumn();
-            Column1 = new DataGridViewTextBoxColumn();
-            apellido1 = new DataGridViewTextBoxColumn();
-            column4 = new DataGridViewTextBoxColumn();
-            Column2 = new DataGridViewTextBoxColumn();
             btnNew = new Button();
             btnEditar = new Button();
             btnEliminar = new Button();
             txtFilter = new TextBox();
             label14 = new Label();
+            Column3 = new DataGridViewTextBoxColumn();
+            Column1 = new DataGridViewTextBoxColumn();
+            apellido1 = new DataGridViewTextBoxColumn();
+            column4 = new DataGridViewTextBoxColumn();
+            Column2 = new DataGridViewTextBoxColumn();
+            Email = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dgvClientes).BeginInit();
             SuspendLayout();
             // 
@@ -60,7 +61,7 @@
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dgvClientes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgvClientes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvClientes.Columns.AddRange(new DataGridViewColumn[] { Column3, Column1, apellido1, column4, Column2 });
+            dgvClientes.Columns.AddRange(new DataGridViewColumn[] { Column3, Column1, apellido1, column4, Column2, Email });
             dgvClientes.Location = new Point(10, 9);
             dgvClientes.Margin = new Padding(3, 2, 3, 2);
             dgvClientes.MultiSelect = false;
@@ -72,44 +73,6 @@
             dgvClientes.Size = new Size(398, 293);
             dgvClientes.TabIndex = 0;
             dgvClientes.MouseDoubleClick += dgvClientes_MouseDoubleClick;
-            // 
-            // Column3
-            // 
-            Column3.HeaderText = "Id Cliente";
-            Column3.MinimumWidth = 6;
-            Column3.Name = "Column3";
-            Column3.ReadOnly = true;
-            Column3.Width = 68;
-            // 
-            // Column1
-            // 
-            Column1.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Column1.HeaderText = "Nombre";
-            Column1.MinimumWidth = 80;
-            Column1.Name = "Column1";
-            Column1.ReadOnly = true;
-            // 
-            // apellido1
-            // 
-            apellido1.HeaderText = "1er Apellido";
-            apellido1.Name = "apellido1";
-            apellido1.ReadOnly = true;
-            // 
-            // column4
-            // 
-            column4.HeaderText = "2do Apellido";
-            column4.Name = "column4";
-            column4.ReadOnly = true;
-            column4.Width = 105;
-            // 
-            // Column2
-            // 
-            Column2.HeaderText = "Telefono";
-            Column2.MinimumWidth = 6;
-            Column2.Name = "Column2";
-            Column2.ReadOnly = true;
-            Column2.Visible = false;
-            Column2.Width = 125;
             // 
             // btnNew
             // 
@@ -160,6 +123,51 @@
             label14.TabIndex = 12;
             label14.Text = "Filtro:";
             // 
+            // Column3
+            // 
+            Column3.HeaderText = "Id Cliente";
+            Column3.MinimumWidth = 6;
+            Column3.Name = "Column3";
+            Column3.ReadOnly = true;
+            Column3.Width = 68;
+            // 
+            // Column1
+            // 
+            Column1.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Column1.HeaderText = "Nombre";
+            Column1.MinimumWidth = 80;
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            // 
+            // apellido1
+            // 
+            apellido1.HeaderText = "1er Apellido";
+            apellido1.Name = "apellido1";
+            apellido1.ReadOnly = true;
+            // 
+            // column4
+            // 
+            column4.HeaderText = "2do Apellido";
+            column4.Name = "column4";
+            column4.ReadOnly = true;
+            column4.Width = 105;
+            // 
+            // Column2
+            // 
+            Column2.HeaderText = "Telefono";
+            Column2.MinimumWidth = 6;
+            Column2.Name = "Column2";
+            Column2.ReadOnly = true;
+            Column2.Visible = false;
+            Column2.Width = 125;
+            // 
+            // Email
+            // 
+            Email.HeaderText = "Email";
+            Email.Name = "Email";
+            Email.ReadOnly = true;
+            Email.Visible = false;
+            // 
             // frmSelectorClientes
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -190,12 +198,13 @@
         private Button btnNew;
         private Button btnEditar;
         private Button btnEliminar;
+        private TextBox txtFilter;
+        private Label label14;
         private DataGridViewTextBoxColumn Column3;
         private DataGridViewTextBoxColumn Column1;
         private DataGridViewTextBoxColumn apellido1;
         private DataGridViewTextBoxColumn column4;
         private DataGridViewTextBoxColumn Column2;
-        private TextBox txtFilter;
-        private Label label14;
+        private DataGridViewTextBoxColumn Email;
     }
 }

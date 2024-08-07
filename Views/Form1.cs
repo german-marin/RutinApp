@@ -25,6 +25,7 @@ namespace RutinApp
         private int idTrainingRecovered;
         private string selectedGrip;
         private bool editing = false;
+        private string customerEmail;
         // Clase para almacenar información adicional en la lista
         public class ListItem
         {
@@ -669,6 +670,7 @@ namespace RutinApp
                 txtdias.Text = training.Days.ToString();
                 txtCliente.Tag = training.CustomerID.ToString();
                 txtCliente.Text = customer.FirstName + " " + customer.LastName1 + " " + customer.LastName2;
+                customerEmail = customer.Email;
                 txtNotasGenerales.Text = training.Notes;
                 btnLimpiar.Enabled = true;
                 btnImprimir.Enabled = true;
@@ -855,7 +857,21 @@ namespace RutinApp
                 }
                 // Generar el PDF en la ubicación elegida por el usuario
                 GenerarPDF.CrearPDF(exercisesToPrint, pdfPath);
+                // Enviar el correo si el usuario lo desea
+                DialogResult result = MessageBox.Show("¿Quieres enviar esta rutina por correo?", "Enviar correo", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    enviarEmail(pdfPath);
+                }
             }
+        }
+        private void enviarEmail(string archivoAdjunto)
+        {
+            string asunto = "Tu rutina de ejercicios";
+            string cuerpo = "Aquí tienes tu rutina de ejercicios adjunta. \n ¡Entrena fuerte!";
+            EmailSender emailSender = new EmailSender();
+
+            emailSender.EnviarEmail(customerEmail.Trim(), asunto, cuerpo, archivoAdjunto);
         }
         private void btnClientes_Click(object sender, EventArgs e)
         {
@@ -873,6 +889,7 @@ namespace RutinApp
                 //Asignamos el valor recuperado del id del training a la variable global
                 txtCliente.Tag = popupForm.iDCustomer;
                 txtCliente.Text = popupForm.customerName.ToString();
+                customerEmail = popupForm.customerEmail.ToString();
             }
         }
 

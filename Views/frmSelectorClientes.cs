@@ -11,6 +11,8 @@ namespace RutinApp.Views
         private List<Customer> customerList;
         public int iDCustomer { get; set; }
         public string customerName { get; set; }
+        public string customerEmail { get; set; }
+
         public frmSelectorClientes()
         {
             customerController = new CustomerController();
@@ -46,6 +48,7 @@ namespace RutinApp.Views
                 row.Cells[2].Value = customer.LastName1;
                 row.Cells[3].Value = customer.LastName2;
                 row.Cells[4].Value = customer.PhoneNumber;
+                row.Cells[5].Value = customer.Email;
 
                 dgvClientes.Rows.Add(row);
             }
@@ -72,6 +75,7 @@ namespace RutinApp.Views
                     // Pasamos el id del training al forms principal
                     iDCustomer = (int)selectedRow.Cells[0].Value;
                     customerName = selectedRow.Cells[1].Value.ToString() + " " + selectedRow.Cells[2].Value.ToString() + " " + selectedRow.Cells[3].Value.ToString();
+                    customerEmail = selectedRow.Cells[4].Value.ToString();
                     this.Close();
                 }
             }
